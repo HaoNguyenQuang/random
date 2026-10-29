@@ -4474,6 +4474,46 @@
       }
     }
 
+    /* NO REPEAT PREVIOUS ROLL STATE */
+    let isNoRepeatPreviousRoll = true;
+    let lastRolledChampIds = new Set();
+
+    try {
+      const savedNoRepeat = localStorage.getItem('lq_no_repeat_previous_roll');
+      if (savedNoRepeat !== null) {
+        isNoRepeatPreviousRoll = savedNoRepeat === 'true';
+      }
+      const savedLastChamps = localStorage.getItem('lq_last_rolled_champ_ids');
+      if (savedLastChamps) {
+        const arr = JSON.parse(savedLastChamps);
+        if (Array.isArray(arr)) lastRolledChampIds = new Set(arr);
+      }
+    } catch (e) {}
+
+    function updateNoRepeatUI() {
+      const chk = document.getElementById('chkNoRepeatPrevious');
+      if (chk) chk.checked = isNoRepeatPreviousRoll;
+      const badge = document.getElementById('noRepeatBadge');
+      if (badge) {
+        if (isNoRepeatPreviousRoll && lastRolledChampIds.size > 0) {
+          badge.style.display = 'inline-block';
+          badge.textContent = `🛡️ Đã loại trừ ${lastRolledChampIds.size} tướng cũ`;
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+
+    function toggleNoRepeatPrevious(enabled) {
+      sound.playClick();
+      isNoRepeatPreviousRoll = enabled;
+      try {
+        localStorage.setItem('lq_no_repeat_previous_roll', enabled ? 'true' : 'false');
+      } catch (e) {}
+      updateNoRepeatUI();
+      showToast(enabled ? '🔁 Đã BẬT: Lần quay tới sẽ KHÔNG lặp lại tướng vừa quay!' : 'Đã TẮT chống lặp lại tướng');
+    }
+
     /* 4. CRYPTO SECURE RANDOM UTILITIES */
     function getSecureRandomInt(min, max) {
       const range = max - min + 1;
@@ -5273,6 +5313,7 @@
       try { localStorage.removeItem('lq_custom_lane_meta'); } catch (e) { }
       renderMetaEditorGrid();
       updateMetaSelectorUI();
+      updateNoRepeatUI();
       updateTeamCardsState();
       showToast('Đã khôi phục toàn bộ bảng Meta về mặc định chuẩn!');
     }
