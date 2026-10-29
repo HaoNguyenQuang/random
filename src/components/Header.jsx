@@ -23,36 +23,35 @@ export default function Header({
   return (
     <header className="header-arena">
       <div className="header-container">
-        {/* BRAND LOGO & QUICK TOOLS */}
-        <div className="header-top-row">
-          <div className="brand-group" onClick={() => setActiveTab('team5v5')}>
-            <div className="brand-logo-wrap">
-              <div className="brand-logo">LQ</div>
-            </div>
-            <div className="brand-text-wrap">
-              <h1 className="brand-title">Liên Quân Random</h1>
-              <p className="brand-slogan">Esports 5v5 Arena • Meta S4</p>
-            </div>
+        {/* BRAND LOGO */}
+        <div className="brand-group" onClick={() => setActiveTab('team5v5')}>
+          <div className="brand-logo-wrap">
+            <div className="brand-logo">LQ</div>
           </div>
-
-          <div className="header-quick-tools">
-            <button
-              className="icon-btn btn-icon-only"
-              onClick={() => { sound.playClick(); onOpenHistory(); }}
-              title="Lịch sử đội hình đã quay"
-            >
-              <History size={16} />
-              <span className="quick-label">Lịch sử</span>
-            </button>
-
-            <button
-              className={`icon-btn btn-icon-only ${soundEnabled ? 'active-audio' : ''}`}
-              onClick={handleSoundToggle}
-              title={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
-            >
-              {soundEnabled ? <Volume2 size={16} color="#00e5ff" /> : <VolumeX size={16} />}
-            </button>
+          <div className="brand-text-wrap">
+            <h1 className="brand-title">Liên Quân Random</h1>
+            <p className="brand-slogan">Esports 5v5 Arena • Meta S4</p>
           </div>
+        </div>
+
+        {/* MOBILE ONLY QUICK TOOLS (TOP RIGHT ON MOBILE) */}
+        <div className="mobile-quick-tools">
+          <button
+            className="icon-btn btn-icon-only"
+            onClick={() => { sound.playClick(); onOpenHistory(); }}
+            title="Lịch sử đội hình đã quay"
+          >
+            <History size={15} />
+            <span className="quick-label">Lịch sử</span>
+          </button>
+
+          <button
+            className={`icon-btn btn-icon-only ${soundEnabled ? 'active-audio' : ''}`}
+            onClick={handleSoundToggle}
+            title={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
+          >
+            {soundEnabled ? <Volume2 size={15} color="#00e5ff" /> : <VolumeX size={15} />}
+          </button>
         </div>
 
         {/* NAVIGATION TABS */}
@@ -94,7 +93,7 @@ export default function Header({
           </button>
         </nav>
 
-        {/* HEADER ACTIONS */}
+        {/* HEADER ACTIONS (DESKTOP: ALL ON THE RIGHT; MOBILE: 3 EQUAL BUTTONS) */}
         <div className="header-actions">
           <button
             className="icon-btn sync-live"
@@ -122,6 +121,24 @@ export default function Header({
           >
             <Users size={13} />
             <span>{activeHeroCount} Tướng</span>
+          </button>
+
+          {/* DESKTOP-ONLY HISTORY & AUDIO BUTTONS */}
+          <button
+            className="icon-btn desktop-only-btn"
+            onClick={() => { sound.playClick(); onOpenHistory(); }}
+            title="Lịch sử đội hình đã quay"
+          >
+            <History size={13} />
+            <span>Lịch sử</span>
+          </button>
+
+          <button
+            className={`icon-btn desktop-only-btn ${soundEnabled ? 'active-audio' : ''}`}
+            onClick={handleSoundToggle}
+            title={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
+          >
+            {soundEnabled ? <Volume2 size={13} color="#00e5ff" /> : <VolumeX size={13} />}
           </button>
         </div>
       </div>

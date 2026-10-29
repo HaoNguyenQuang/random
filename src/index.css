@@ -126,10 +126,10 @@ body {
   max-width: 1440px;
   margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 16px;
 }
 
 .brand-group {
@@ -229,7 +229,8 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .icon-btn {
@@ -266,6 +267,14 @@ body {
 
 .icon-btn.btn-icon-only {
   padding: 8px;
+}
+
+.mobile-quick-tools {
+  display: none;
+}
+
+.desktop-only-btn {
+  display: inline-flex;
 }
 
 /* =====================================================================
@@ -2029,45 +2038,47 @@ body {
     border-bottom: 1px solid rgba(245, 186, 49, 0.25);
   }
   .header-container {
-    width: 100%;
-    gap: 6px;
-  }
-  .header-top-row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    gap: 6px;
   }
   .brand-group {
-    gap: 8px;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
   }
   .brand-logo-wrap {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
   .brand-logo {
-    font-size: 16px;
-    border-radius: 9px;
+    font-size: 15px;
+    border-radius: 8px;
   }
   .brand-title {
-    font-size: 16px;
+    font-size: 15px;
+    line-height: 1.1;
   }
   .brand-slogan {
-    font-size: 9px;
+    font-size: 8.5px;
     letter-spacing: 0.5px;
   }
-  .header-quick-tools {
+  .mobile-quick-tools {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-shrink: 0;
   }
-  .header-quick-tools .icon-btn {
+  .mobile-quick-tools .icon-btn {
     padding: 6px 8px;
     font-size: 11px;
     gap: 4px;
   }
-  .header-quick-tools .quick-label {
-    font-size: 11px;
+  .desktop-only-btn {
+    display: none !important;
   }
   
   /* NAV TABS 4-COLUMN BALANCED GRID FOR MOBILE */
