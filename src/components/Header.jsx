@@ -23,14 +23,35 @@ export default function Header({
   return (
     <header className="header-arena">
       <div className="header-container">
-        {/* BRAND LOGO */}
-        <div className="brand-group" onClick={() => setActiveTab('team5v5')}>
-          <div className="brand-logo-wrap">
-            <div className="brand-logo">LQ</div>
+        {/* BRAND LOGO & QUICK TOOLS */}
+        <div className="header-top-row">
+          <div className="brand-group" onClick={() => setActiveTab('team5v5')}>
+            <div className="brand-logo-wrap">
+              <div className="brand-logo">LQ</div>
+            </div>
+            <div className="brand-text-wrap">
+              <h1 className="brand-title">Liên Quân Random</h1>
+              <p className="brand-slogan">Esports 5v5 Arena • Meta S4</p>
+            </div>
           </div>
-          <div>
-            <h1 className="brand-title">Liên Quân Random</h1>
-            <p className="brand-slogan">Esports 5v5 Arena • Meta S4 2026</p>
+
+          <div className="header-quick-tools">
+            <button
+              className="icon-btn btn-icon-only"
+              onClick={() => { sound.playClick(); onOpenHistory(); }}
+              title="Lịch sử đội hình đã quay"
+            >
+              <History size={16} />
+              <span className="quick-label">Lịch sử</span>
+            </button>
+
+            <button
+              className={`icon-btn btn-icon-only ${soundEnabled ? 'active-audio' : ''}`}
+              onClick={handleSoundToggle}
+              title={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
+            >
+              {soundEnabled ? <Volume2 size={16} color="#00e5ff" /> : <VolumeX size={16} />}
+            </button>
           </div>
         </div>
 
@@ -40,79 +61,67 @@ export default function Header({
             className={`nav-tab-btn ${activeTab === 'team5v5' ? 'active' : ''}`}
             onClick={() => { sound.playClick(); setActiveTab('team5v5'); }}
           >
-            <Swords size={16} /> Team 5v5
+            <Swords size={15} /> 
+            <span className="tab-text-full">Team 5v5</span>
+            <span className="tab-text-short">5v5</span>
           </button>
+
           <button
             className={`nav-tab-btn ${activeTab === 'lanePicker' ? 'active' : ''}`}
             onClick={() => { sound.playClick(); setActiveTab('lanePicker'); }}
           >
-            <Target size={16} /> Theo Vị Trí
+            <Target size={15} /> 
+            <span className="tab-text-full">Theo Vị Trí</span>
+            <span className="tab-text-short">Vị Trí</span>
           </button>
+
           <button
             className={`nav-tab-btn ${activeTab === 'roleWheel' ? 'active' : ''}`}
             onClick={() => { sound.playClick(); setActiveTab('roleWheel'); }}
           >
-            <Compass size={16} /> Vòng Quay Role
+            <Compass size={15} /> 
+            <span className="tab-text-full">Vòng Quay Role</span>
+            <span className="tab-text-short">Quay Role</span>
           </button>
+
           <button
             className={`nav-tab-btn ${activeTab === 'customWheel' ? 'active' : ''}`}
             onClick={() => { sound.playClick(); setActiveTab('customWheel'); }}
           >
-            <CircleDot size={16} /> Vòng Quay Custom
+            <CircleDot size={15} /> 
+            <span className="tab-text-full">Vòng Quay Custom</span>
+            <span className="tab-text-short">Custom</span>
           </button>
         </nav>
 
         {/* HEADER ACTIONS */}
         <div className="header-actions">
-          {/* TIERLQ SYNC BUTTON */}
           <button
             className="icon-btn sync-live"
             onClick={onSyncTierLQ}
             disabled={isSyncing}
             title={syncInfo?.patch ? `Đã đồng bộ TierLQ Bản ${syncInfo.patch}` : 'Đồng bộ Meta mới nhất từ TierLQ.github.io'}
           >
-            <RefreshCw size={14} className={isSyncing ? 'animate-spin' : ''} />
-            <span>{isSyncing ? 'Đang đồng bộ...' : 'Đồng Bộ Meta'}</span>
+            <RefreshCw size={13} className={isSyncing ? 'animate-spin' : ''} />
+            <span>{isSyncing ? 'Đang tải...' : 'Đồng Bộ'}</span>
           </button>
 
-          {/* META SETTINGS */}
           <button
-            className="icon-btn"
+            className="icon-btn meta-btn"
             onClick={() => { sound.playClick(); onOpenMetaEditor(); }}
-            style={{ borderColor: 'rgba(245, 186, 49, 0.45)', color: 'var(--gold-light)' }}
             title="Tùy chỉnh bậc Meta 5 đường (S, A, B, C, D)"
           >
-            <Settings size={14} />
+            <Settings size={13} />
             <span>Chỉnh Meta</span>
           </button>
 
-          {/* HEROES CATALOG */}
           <button
-            className="icon-btn"
+            className="icon-btn catalog-btn"
             onClick={() => { sound.playClick(); onOpenHeroCatalog(); }}
             title="Danh sách và loại trừ tướng"
           >
-            <Users size={14} />
-            <span>{activeHeroCount}/129 Tướng</span>
-          </button>
-
-          {/* HISTORY */}
-          <button
-            className="icon-btn"
-            onClick={() => { sound.playClick(); onOpenHistory(); }}
-            title="Lịch sử đội hình đã quay"
-          >
-            <History size={14} />
-            <span>Lịch sử</span>
-          </button>
-
-          {/* SOUND TOGGLE */}
-          <button
-            className={`icon-btn ${soundEnabled ? 'active-audio' : ''}`}
-            onClick={handleSoundToggle}
-            title={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
-          >
-            {soundEnabled ? <Volume2 size={14} color="#00e5ff" /> : <VolumeX size={14} />}
+            <Users size={13} />
+            <span>{activeHeroCount} Tướng</span>
           </button>
         </div>
       </div>

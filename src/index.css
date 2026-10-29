@@ -167,6 +167,7 @@ body {
   letter-spacing: 0.6px;
   background: linear-gradient(135deg, #ffffff 0%, #ffd700 50%, #ff9900 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 1.15;
 }
@@ -214,6 +215,14 @@ body {
   background: var(--gold-gradient-btn);
   color: #07090f;
   box-shadow: 0 0 14px rgba(245, 186, 49, 0.5);
+}
+
+.tab-text-short {
+  display: none;
+}
+
+.tab-text-full {
+  display: inline;
 }
 
 .header-actions {
@@ -1942,87 +1951,309 @@ body {
   }
 }
 
-/* SMARTPHONES & MOBILE SCREENS (<600px) */
+/* SMARTPHONES & MOBILE SCREENS (<600px) — PERFECT FOR IPHONE 14 PRO MAX (430px) */
 @media (max-width: 600px) {
-  .team-arena-wrapper {
-    padding: 14px 10px;
-    border-radius: 18px;
+  html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
-  .team-arena-header {
-    margin-bottom: 14px;
-    padding-bottom: 10px;
+  .app-shell, .main-content-container {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    padding: 10px 10px 32px;
+    box-sizing: border-box;
   }
-  .arena-title {
+  .header-arena {
+    padding: 8px 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .header-container {
+    width: 100%;
+    gap: 8px;
+  }
+  .header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  .brand-group {
+    gap: 8px;
+  }
+  .brand-logo-wrap {
+    width: 36px;
+    height: 36px;
+  }
+  .brand-logo {
+    font-size: 16px;
+    border-radius: 9px;
+  }
+  .brand-title {
     font-size: 16px;
   }
-  .team-arena-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+  .brand-slogan {
+    font-size: 9px;
+    letter-spacing: 0.5px;
   }
-  .esports-card {
+  .header-quick-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .header-quick-tools .icon-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+  .header-quick-tools .quick-label {
+    font-size: 11px;
+  }
+  
+  /* NAV TABS 4-COLUMN BALANCED GRID FOR MOBILE */
+  .nav-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    gap: 4px;
+    padding: 3px;
+    border-radius: 12px;
+    overflow: visible;
+  }
+  .nav-tab-btn {
+    padding: 8px 2px;
+    font-size: 11px;
+    font-weight: 800;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    text-align: center;
+    border-radius: 8px;
+  }
+  .nav-tab-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+  .tab-text-short {
+    display: inline !important;
+  }
+  .tab-text-full {
+    display: none !important;
+  }
+
+  /* HEADER ACTIONS 3-COLUMN EQUAL GRID FOR MOBILE */
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    gap: 6px;
+  }
+  .header-actions .icon-btn {
+    width: 100%;
+    padding: 7px 4px;
+    font-size: 11px;
+    justify-content: center;
+    text-align: center;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .header-actions .icon-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  /* CONTROLS & PLAYER NAMES */
+  .controls-panel {
+    padding: 12px 10px;
     border-radius: 14px;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .card-avatar-inner {
-    width: 84px;
-    height: 84px;
+  .section-title-wrap {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .section-title {
+    font-size: 13px;
   }
   .player-inputs-grid {
     grid-template-columns: 1fr;
     gap: 6px;
+    width: 100%;
   }
-  .controls-panel {
-    padding: 14px 12px;
-    border-radius: 16px;
+  .player-input-card {
+    padding: 6px 10px;
+  }
+  .player-name-field {
+    font-size: 13px;
+  }
+
+  /* CYBER SWITCH CONTAINER */
+  .switch-banner-section {
+    width: 100%;
   }
   .cyber-switch-container {
-    padding: 10px 14px;
-    border-radius: 20px;
-    gap: 12px;
+    padding: 10px 10px;
+    border-radius: 16px;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .switch-toggle-track {
-    width: 46px;
+    width: 44px;
     height: 24px;
+    flex-shrink: 0;
   }
   .switch-toggle-thumb {
     width: 18px;
     height: 18px;
   }
   .cyber-switch-container.active .switch-toggle-thumb {
-    transform: translateX(22px);
+    transform: translateX(20px);
+  }
+  .switch-text-group {
+    min-width: 0;
+    flex: 1;
   }
   .switch-label-text {
-    font-size: 13.5px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.35;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+  }
+  .switch-label-text svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
   }
   .switch-status-pill {
-    font-size: 10px;
-    padding: 2px 8px;
+    font-size: 9.5px;
+    padding: 2px 6px;
+    border-radius: 8px;
   }
   .switch-sub-desc {
-    font-size: 11px;
+    font-size: 10.5px;
+    line-height: 1.35;
+    margin-top: 4px;
   }
+
+  /* EXCLUDED PREVIEW CHIPS */
   .excluded-preview-strip {
-    padding: 6px 12px;
-    border-radius: 14px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+  }
+  .strip-title {
+    font-size: 11px;
+  }
+  .strip-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .champ-mini-chip {
+    padding: 3px 6px 3px 3px;
+    font-size: 10.5px;
+    gap: 4px;
+  }
+  .champ-mini-chip img {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ACTION BUTTONS */
+  .main-actions-bar {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
   .cyber-glow-btn {
     width: 100%;
-    padding: 14px 20px;
-    font-size: 16px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 900;
+    justify-content: center;
+    gap: 8px;
+  }
+  .cyber-glow-btn svg {
+    width: 20px;
+    height: 20px;
   }
   .secondary-actions-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     width: 100%;
-    justify-content: stretch;
+    gap: 5px;
   }
   .secondary-btn {
-    flex: 1;
+    width: 100%;
+    padding: 8px 3px;
+    font-size: 10.5px;
     justify-content: center;
-    padding: 8px 10px;
+    text-align: center;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .secondary-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  /* TEAM ARENA WRAPPER & CARDS */
+  .team-arena-wrapper {
+    padding: 12px 8px;
+    border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .team-arena-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .arena-title {
+    font-size: 14.5px;
+  }
+  .arena-badge {
+    font-size: 9.5px;
+    padding: 3px 7px;
+  }
+  .team-arena-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+  .esports-card {
+    border-radius: 12px;
+    width: 100%;
+  }
+  .card-avatar-inner {
+    width: 80px;
+    height: 80px;
+  }
+  .champ-name {
+    font-size: 15px;
+  }
+  .player-display-name {
+    max-width: 90px;
     font-size: 12px;
   }
+
+  /* MODALS & OTHER COMPONENTS */
   .meta-tiers-grid {
     grid-template-columns: 1fr;
   }
@@ -2031,29 +2262,34 @@ body {
     max-height: 94vh;
   }
   .modal-header {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
   .modal-title {
-    font-size: 15px;
+    font-size: 14px;
   }
   .modal-footer {
-    padding: 10px 16px;
+    padding: 10px 14px;
   }
   .catalog-grid {
-    grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
-    padding: 12px 14px;
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    padding: 10px 12px;
+    gap: 6px;
   }
   .catalog-hero-avatar-wrap {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
   .history-players-row {
     grid-template-columns: 1fr;
     gap: 6px;
   }
   .wheel-canvas-box {
-    padding: 6px;
+    padding: 4px;
+  }
+  .wheel-center-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 13px;
   }
 }
 
