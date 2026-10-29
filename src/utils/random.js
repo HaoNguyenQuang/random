@@ -97,7 +97,8 @@ export function solveTeamMatching({
   disabledHeroIds,
   laneMeta,
   isNoRepeatPrevious,
-  lastRolledChampIds
+  lastRolledChampIds,
+  lastPlayerRoles
 }) {
   const assignedRoles = {};
   const lockedRolesUsed = new Set();
@@ -109,14 +110,52 @@ export function solveTeamMatching({
     }
   });
 
-  const freeRoles = POSITIONS.filter(r => !lockedRolesUsed.has(r));
-  const shuffledFreeRoles = secureShuffle(freeRoles);
-
+  const freeRoleList = POSITIONS.filter(r => !lockedRolesUsed.has(r));
+  const unassignedPlayerIndices = [];
   players.forEach((p, idx) => {
     if (!assignedRoles[idx]) {
-      assignedRoles[idx] = shuffledFreeRoles.pop();
+      unassignedPlayerIndices.push(idx);
     }
   });
+
+  // Assign roles: when isNoRepeatPrevious is true, ensure player does not repeat previous role
+  function assignRolesWithDerangement(pIdxList, availableRoles) {
+    if (pIdxList.length === 0) return;
+
+    const shuffledIdxList = secureShuffle(pIdxList);
+    const usedRoles = new Set();
+
+    function roleBacktrack(step) {
+      if (step === shuffledIdxList.length) return true;
+      const pIdx = shuffledIdxList[step];
+      const prevRole = (lastPlayerRoles && lastPlayerRoles[pIdx]) || (players[pIdx] && players[pIdx].role);
+
+      let candidateRoles = availableRoles.filter(r => !usedRoles.has(r));
+      if (isNoRepeatPrevious && prevRole && candidateRoles.some(r => r !== prevRole)) {
+        candidateRoles = candidateRoles.filter(r => r !== prevRole);
+      }
+
+      const shuffledCandidates = secureShuffle(candidateRoles);
+      for (const role of shuffledCandidates) {
+        usedRoles.add(role);
+        assignedRoles[pIdx] = role;
+        if (roleBacktrack(step + 1)) return true;
+        usedRoles.delete(role);
+        delete assignedRoles[pIdx];
+      }
+      return false;
+    }
+
+    // Try derangement; if impossible due to locks, assign randomly
+    if (!roleBacktrack(0)) {
+      const fallbackShuffled = secureShuffle(availableRoles);
+      pIdxList.forEach(idx => {
+        assignedRoles[idx] = fallbackShuffled.pop();
+      });
+    }
+  }
+
+  assignRolesWithDerangement(unassignedPlayerIndices, freeRoleList);
 
   const assignedChamps = {};
   const usedChampIds = new Set();

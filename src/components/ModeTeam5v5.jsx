@@ -39,6 +39,8 @@ export default function ModeTeam5v5({
   setIsNoRepeatPrevious,
   lastRolledChampIds,
   setLastRolledChampIds,
+  lastPlayerRoles,
+  setLastPlayerRoles,
   onSaveHistory
 }) {
   const [isRolling, setIsRolling] = useState(false);
@@ -66,7 +68,7 @@ export default function ModeTeam5v5({
     } catch (e) {}
   };
 
-  // Main Team Random Roll (Smooth 0-lag execution)
+  // Main Team Random Roll (Smooth 0-lag execution with role & champ anti-repeat)
   const handleRandomTeam = () => {
     if (isRolling) return;
     sound.playWhoosh();
@@ -79,7 +81,8 @@ export default function ModeTeam5v5({
         disabledHeroIds,
         laneMeta,
         isNoRepeatPrevious,
-        lastRolledChampIds
+        lastRolledChampIds,
+        lastPlayerRoles
       });
 
       if (!result.success) {
@@ -97,9 +100,17 @@ export default function ModeTeam5v5({
 
       setPlayers(newPlayers);
 
-      // Record last rolled champion IDs for no-repeat mode
+      // Record last rolled champion IDs and player roles for no-repeat mode
       const newRolledIds = new Set(newPlayers.map(p => p.champId).filter(Boolean));
       setLastRolledChampIds(newRolledIds);
+
+      const newRoles = {};
+      newPlayers.forEach((p, idx) => {
+        newRoles[idx] = p.role;
+      });
+      if (setLastPlayerRoles) {
+        setLastPlayerRoles(newRoles);
+      }
 
       // Save to history
       if (onSaveHistory) {
@@ -270,26 +281,29 @@ export default function ModeTeam5v5({
         </div>
 
         <div className="player-inputs-grid">
-          {players.map((p, idx) => (
-            <div key={idx} className="player-input-card">
-              <span className="player-num-badge">{idx + 1}</span>
-              <input
-                type="text"
-                className="player-name-field"
-                placeholder={`Người chơi ${idx + 1}`}
-                value={p.name}
-                onChange={(e) => {
-                  const updated = [...players];
-                  updated[idx] = { ...updated[idx], name: e.target.value };
-                  setPlayers(updated);
-                }}
-              />
-            </div>
-          ))}
+          {players.map((p, idx) => {
+            const defaultNames = ['Minh', 'Vũ', 'Hào', 'Công', 'Đức'];
+            return (
+              <div key={idx} className="player-input-card">
+                <span className="player-num-badge">{idx + 1}</span>
+                <input
+                  type="text"
+                  className="player-name-field"
+                  placeholder={defaultNames[idx] || `Người chơi ${idx + 1}`}
+                  value={p.name}
+                  onChange={(e) => {
+                    const updated = [...players];
+                    updated[idx] = { ...updated[idx], name: e.target.value };
+                    setPlayers(updated);
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* 2. PROMINENT CYBER SWITCH: KHÔNG LẶP LẠI TƯỚNG LẦN QUAY TRƯỚC */}
+      {/* 2. PROMINENT CYBER SWITCH: KHÔNG LẶP LẠI VỊ TRÍ & TƯỚNG LẦN QUAY TRƯỚC */}
       <section className="switch-banner-section">
         <div 
           id="chkNoRepeatWrapper"
@@ -298,7 +312,7 @@ export default function ModeTeam5v5({
             sound.playClick();
             setIsNoRepeatPrevious(!isNoRepeatPrevious);
           }}
-          title="Bật tính năng này để 5 tướng vừa quay ở lần trước KHÔNG bị lặp lại ở lần quay tiếp theo"
+          title="Bật tính năng này để mỗi người chơi sẽ đổi sang vị trí và tướng hoàn toàn mới so với lần quay trước"
         >
           <div className="switch-toggle-track">
             <div className="switch-toggle-thumb"></div>
@@ -307,9 +321,9 @@ export default function ModeTeam5v5({
           <div className="switch-text-group">
             <div className="switch-label-text">
               <RefreshCw size={18} className={isNoRepeatPrevious ? 'rotate-glow' : ''} />
-              <span>KHÔNG LẶP LẠI TƯỚNG CỦA LẦN QUAY TRƯỚC</span>
+              <span>KHÔNG LẶP LẠI VỊ TRÍ & TƯỚNG CỦA LẦN QUAY TRƯỚC</span>
               <span className={`switch-status-pill ${isNoRepeatPrevious ? 'pill-on' : 'pill-off'}`}>
-                {isNoRepeatPrevious ? '✓ ĐANG BẬT' : '✕ ĐANG TẮT'}
+                {isNoRepeatPrevious ? '✓ ĐANG BẬT (ĐỔI LANE & TƯỚNG)' : '✕ ĐANG TẮT'}
               </span>
             </div>
 
@@ -317,12 +331,12 @@ export default function ModeTeam5v5({
               {isNoRepeatPrevious ? (
                 <span className="desc-active">
                   <ShieldCheck size={14} />
-                  Hệ thống đang tự động <strong>loại trừ 5 tướng vừa quay</strong> để lần tiếp theo hoàn toàn mới!
+                  Mỗi người chơi (Minh, Vũ, Hào, Công, Đức) sẽ được <strong>đổi vị trí (lane) và nhận tướng mới</strong>, không lặp lại ván trước!
                 </span>
               ) : (
                 <span className="desc-inactive">
                   <ShieldAlert size={14} />
-                  Đang tắt: Các lần quay là độc lập, tướng có thể xuất hiện lại bình thường.
+                  Đang tắt: Các lần quay là độc lập, vị trí và tướng có thể xuất hiện lại bình thường.
                 </span>
               )}
             </div>

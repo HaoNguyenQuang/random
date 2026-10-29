@@ -23,11 +23,11 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_PLAYERS = [
-  { name: 'Người chơi 1', role: 'TOP', champId: null, lockRole: false, lockChamp: false },
-  { name: 'Người chơi 2', role: 'JUNGLE', champId: null, lockRole: false, lockChamp: false },
-  { name: 'Người chơi 3', role: 'MID', champId: null, lockRole: false, lockChamp: false },
-  { name: 'Người chơi 4', role: 'AD', champId: null, lockRole: false, lockChamp: false },
-  { name: 'Người chơi 5', role: 'SP', champId: null, lockRole: false, lockChamp: false }
+  { name: 'Minh', role: 'TOP', champId: null, lockRole: false, lockChamp: false },
+  { name: 'Vũ', role: 'JUNGLE', champId: null, lockRole: false, lockChamp: false },
+  { name: 'Hào', role: 'MID', champId: null, lockRole: false, lockChamp: false },
+  { name: 'Công', role: 'AD', champId: null, lockRole: false, lockChamp: false },
+  { name: 'Đức', role: 'SP', champId: null, lockRole: false, lockChamp: false }
 ];
 
 export default function App() {
@@ -57,11 +57,20 @@ export default function App() {
     setTimeout(() => setToastMessage(null), duration);
   };
 
-  // Players state
+  // Players state with default names: Minh, Vũ, Hào, Công, Đức
   const [players, setPlayers] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PLAYERS);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === 5) {
+          const defaultNames = ['Minh', 'Vũ', 'Hào', 'Công', 'Đức'];
+          return parsed.map((p, idx) => ({
+            ...p,
+            name: p.name && !p.name.includes('Người chơi') ? p.name : defaultNames[idx]
+          }));
+        }
+      }
     } catch (e) {}
     return DEFAULT_PLAYERS;
   });
@@ -75,8 +84,9 @@ export default function App() {
     return true; // Default ON
   });
 
-  // 5 Champions rolled in the previous round
+  // 5 Champions & 5 Roles from the previous round to prevent duplicate lane/hero per player
   const [lastRolledChampIds, setLastRolledChampIds] = useState(new Set());
+  const [lastPlayerRoles, setLastPlayerRoles] = useState({});
 
   // 5-Tier Lane Meta
   const [laneMeta, setLaneMeta] = useState(() => {
@@ -218,6 +228,8 @@ export default function App() {
             setIsNoRepeatPrevious={setIsNoRepeatPrevious}
             lastRolledChampIds={lastRolledChampIds}
             setLastRolledChampIds={setLastRolledChampIds}
+            lastPlayerRoles={lastPlayerRoles}
+            setLastPlayerRoles={setLastPlayerRoles}
             onSaveHistory={handleSaveHistory}
           />
         )}
