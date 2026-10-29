@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Swords, 
   Lock, 
@@ -12,7 +12,9 @@ import {
   ShieldCheck, 
   User, 
   Shuffle,
-  Dice5
+  Dice5,
+  Flame,
+  Zap
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
@@ -40,40 +42,62 @@ export default function ModeTeam5v5({
   onSaveHistory
 }) {
   const [isRolling, setIsRolling] = useState(false);
+  const [displayChamps, setDisplayChamps] = useState(() => players.map(p => p.champId));
   const [copySuccess, setCopySuccess] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const arenaRef = useRef(null);
 
-  // Trigger celebration confetti
+  // Sync displayChamps with players when not rolling
+  useEffect(() => {
+    if (!isRolling) {
+      setDisplayChamps(players.map(p => p.champId));
+    }
+  }, [players, isRolling]);
+
+  // Dual-cannon cinematic confetti celebration
   const triggerConfetti = () => {
     try {
+      // Left cannon
       confetti({
-        particleCount: 75,
-        spread: 80,
-        origin: { y: 0.65 },
-        colors: ['#ffd700', '#00e5ff', '#ff007f', '#00ff88', '#ffffff']
+        particleCount: 55,
+        angle: 60,
+        spread: 70,
+        origin: { x: 0.05, y: 0.65 },
+        colors: ['#ffd700', '#00f0ff', '#ff2a6d', '#00ff88', '#ffffff']
       });
-    } catch (e) {
-      // Ignore if confetti fails
-    }
+      // Right cannon
+      confetti({
+        particleCount: 55,
+        angle: 120,
+        spread: 70,
+        origin: { x: 0.95, y: 0.65 },
+        colors: ['#ffd700', '#00f0ff', '#ff2a6d', '#00ff88', '#ffffff']
+      });
+    } catch (e) {}
   };
 
-  // Main Team Random Roll
+  // Main Team Random Roll with slot machine scramble
   const handleRandomTeam = () => {
     if (isRolling) return;
     sound.playWhoosh();
     setIsRolling(true);
 
-    // Audio click cadence simulation
-    let tickCount = 0;
-    const tickInterval = setInterval(() => {
+    // Rapid scramble animation: cycle random champions every 55ms
+    let scrambleTicks = 0;
+    const scrambleInterval = setInterval(() => {
       sound.playTick();
-      tickCount++;
-      if (tickCount > 6) clearInterval(tickInterval);
-    }, 80);
+      setDisplayChamps(prev => {
+        return players.map((p, idx) => {
+          if (p.lockChamp && p.champId) return p.champId;
+          const randomPick = availableChamps[Math.floor(Math.random() * availableChamps.length)];
+          return randomPick ? randomPick.id : prev[idx];
+        });
+      });
+      scrambleTicks++;
+    }, 55);
 
     setTimeout(() => {
-      clearInterval(tickInterval);
+      clearInterval(scrambleInterval);
 
       const result = solveTeamMatching({
         players,
@@ -98,6 +122,7 @@ export default function ModeTeam5v5({
       }));
 
       setPlayers(newPlayers);
+      setDisplayChamps(newPlayers.map(p => p.champId));
 
       // Record last rolled champion IDs for no-repeat mode
       const newRolledIds = new Set(newPlayers.map(p => p.champId).filter(Boolean));
@@ -121,7 +146,7 @@ export default function ModeTeam5v5({
       sound.playVictory();
       triggerConfetti();
       setIsRolling(false);
-    }, 450);
+    }, 550);
   };
 
   // Reroll single player's champion
@@ -170,7 +195,7 @@ export default function ModeTeam5v5({
 
   // Toggle lock role
   const toggleLockRole = (idx) => {
-    sound.playClick();
+    sound.playLock();
     const updated = [...players];
     updated[idx] = { ...updated[idx], lockRole: !updated[idx].lockRole };
     setPlayers(updated);
@@ -178,7 +203,7 @@ export default function ModeTeam5v5({
 
   // Toggle lock champ
   const toggleLockChamp = (idx) => {
-    sound.playClick();
+    sound.playLock();
     const updated = [...players];
     updated[idx] = { ...updated[idx], lockChamp: !updated[idx].lockChamp };
     setPlayers(updated);
@@ -308,7 +333,7 @@ export default function ModeTeam5v5({
           
           <div className="switch-text-group">
             <div className="switch-label-text">
-              <RefreshCw size={17} className={isNoRepeatPrevious ? 'rotate-glow' : ''} />
+              <RefreshCw size={18} className={isNoRepeatPrevious ? 'rotate-glow' : ''} />
               <span>KHÔNG LẶP LẠI TƯỚNG CỦA LẦN QUAY TRƯỚC</span>
               <span className={`switch-status-pill ${isNoRepeatPrevious ? 'pill-on' : 'pill-off'}`}>
                 {isNoRepeatPrevious ? '✓ ĐANG BẬT' : '✕ ĐANG TẮT'}
@@ -318,12 +343,12 @@ export default function ModeTeam5v5({
             <div className="switch-sub-desc">
               {isNoRepeatPrevious ? (
                 <span className="desc-active">
-                  <ShieldCheck size={13} />
+                  <ShieldCheck size={14} />
                   Hệ thống đang tự động <strong>loại trừ 5 tướng vừa quay</strong> để lần tiếp theo hoàn toàn mới!
                 </span>
               ) : (
                 <span className="desc-inactive">
-                  <ShieldAlert size={13} />
+                  <ShieldAlert size={14} />
                   Đang tắt: Các lần quay là độc lập, tướng có thể xuất hiện lại bình thường.
                 </span>
               )}
@@ -334,7 +359,9 @@ export default function ModeTeam5v5({
         {/* CHIP LIST OF CURRENTLY EXCLUDED 5 HEROES */}
         {isNoRepeatPrevious && excludedPrevChamps.length > 0 && (
           <div className="excluded-preview-strip animate-fadeIn">
-            <span className="strip-title">5 tướng lần trước bị khóa:</span>
+            <span className="strip-title">
+              <Zap size={14} /> 5 tướng lần trước bị khóa:
+            </span>
             <div className="strip-chips">
               {excludedPrevChamps.map(c => (
                 <div key={c.id} className="champ-mini-chip">
@@ -355,8 +382,8 @@ export default function ModeTeam5v5({
           onClick={handleRandomTeam}
           disabled={isRolling}
         >
-          <Swords size={22} className={isRolling ? 'animate-spin' : ''} />
-          <span>{isRolling ? 'ĐANG CHỌN ĐỘI HÌNH...' : '⚔️ RANDOM ĐỘI HÌNH 5V5'}</span>
+          <Swords size={24} className={isRolling ? 'animate-spin' : ''} />
+          <span>{isRolling ? '⚡ ĐANG PHÂN LANE & TƯỚNG...' : '⚔️ RANDOM ĐỘI HÌNH 5V5'}</span>
         </button>
 
         <div className="secondary-actions-group">
@@ -392,7 +419,10 @@ export default function ModeTeam5v5({
       {/* 4. TEAM 5V5 ARENA CARDS */}
       <div className="team-arena-wrapper" ref={arenaRef}>
         <div className="team-arena-header">
-          <span className="arena-title">ĐỘI HÌNH THI ĐẤU 5V5</span>
+          <div className="flex-row items-center gap-2">
+            <Flame size={20} color="#f5ba31" />
+            <span className="arena-title">ĐỘI HÌNH THI ĐẤU 5V5</span>
+          </div>
           <span className="arena-badge">CHẾ ĐỘ TỰ CHỌN META S4</span>
         </div>
 
@@ -400,7 +430,8 @@ export default function ModeTeam5v5({
           {players.map((p, idx) => {
             const role = p.role || POSITIONS[idx];
             const cfg = POSITION_CONFIG[role] || { name: 'TOP', icon: '⚔️', color: '#ff4757', desc: 'Đường Tà Thần' };
-            const champ = CHAMP_LOOKUP[p.champId];
+            const currentChampId = displayChamps[idx];
+            const champ = CHAMP_LOOKUP[currentChampId];
             const tier = champ ? getHeroTierForLane(champ.name, role, laneMeta) : '---';
 
             return (
