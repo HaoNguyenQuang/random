@@ -42,32 +42,22 @@ export default function ModeTeam5v5({
   onSaveHistory
 }) {
   const [isRolling, setIsRolling] = useState(false);
-  const [displayChamps, setDisplayChamps] = useState(() => players.map(p => p.champId));
   const [copySuccess, setCopySuccess] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const arenaRef = useRef(null);
 
-  // Sync displayChamps with players when not rolling
-  useEffect(() => {
-    if (!isRolling) {
-      setDisplayChamps(players.map(p => p.champId));
-    }
-  }, [players, isRolling]);
-
-  // Dual-cannon cinematic confetti celebration
+  // Dual-cannon confetti celebration
   const triggerConfetti = () => {
     try {
-      // Left cannon
       confetti({
-        particleCount: 55,
+        particleCount: 50,
         angle: 60,
         spread: 70,
         origin: { x: 0.05, y: 0.65 },
         colors: ['#ffd700', '#00f0ff', '#ff2a6d', '#00ff88', '#ffffff']
       });
-      // Right cannon
       confetti({
-        particleCount: 55,
+        particleCount: 50,
         angle: 120,
         spread: 70,
         origin: { x: 0.95, y: 0.65 },
@@ -76,29 +66,13 @@ export default function ModeTeam5v5({
     } catch (e) {}
   };
 
-  // Main Team Random Roll with slot machine scramble
+  // Main Team Random Roll (Smooth 0-lag execution)
   const handleRandomTeam = () => {
     if (isRolling) return;
     sound.playWhoosh();
     setIsRolling(true);
 
-    // Rapid scramble animation: cycle random champions every 55ms
-    let scrambleTicks = 0;
-    const scrambleInterval = setInterval(() => {
-      sound.playTick();
-      setDisplayChamps(prev => {
-        return players.map((p, idx) => {
-          if (p.lockChamp && p.champId) return p.champId;
-          const randomPick = availableChamps[Math.floor(Math.random() * availableChamps.length)];
-          return randomPick ? randomPick.id : prev[idx];
-        });
-      });
-      scrambleTicks++;
-    }, 55);
-
     setTimeout(() => {
-      clearInterval(scrambleInterval);
-
       const result = solveTeamMatching({
         players,
         availableChamps,
@@ -122,7 +96,6 @@ export default function ModeTeam5v5({
       }));
 
       setPlayers(newPlayers);
-      setDisplayChamps(newPlayers.map(p => p.champId));
 
       // Record last rolled champion IDs for no-repeat mode
       const newRolledIds = new Set(newPlayers.map(p => p.champId).filter(Boolean));
@@ -146,7 +119,7 @@ export default function ModeTeam5v5({
       sound.playVictory();
       triggerConfetti();
       setIsRolling(false);
-    }, 550);
+    }, 380);
   };
 
   // Reroll single player's champion
@@ -430,8 +403,7 @@ export default function ModeTeam5v5({
           {players.map((p, idx) => {
             const role = p.role || POSITIONS[idx];
             const cfg = POSITION_CONFIG[role] || { name: 'TOP', icon: '⚔️', color: '#ff4757', desc: 'Đường Tà Thần' };
-            const currentChampId = displayChamps[idx];
-            const champ = CHAMP_LOOKUP[currentChampId];
+            const champ = CHAMP_LOOKUP[p.champId];
             const tier = champ ? getHeroTierForLane(champ.name, role, laneMeta) : '---';
 
             return (
