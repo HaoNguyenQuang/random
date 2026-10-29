@@ -2083,6 +2083,12 @@
       border: 1px dashed rgba(148, 163, 184, 0.45);
     }
 
+    .tier-badge-D {
+      background: rgba(75, 85, 99, 0.4);
+      color: #9ca3af;
+      border: 1px dashed rgba(156, 163, 175, 0.4);
+    }
+
     /* HERO EXCLUSION MODAL TIER BADGE */
     .hero-tier-corner {
       position: absolute;
@@ -2212,6 +2218,12 @@
       background: rgba(148, 163, 184, 0.2);
       color: #94a3b8;
       border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .meta-stat-D {
+      background: rgba(120, 113, 108, 0.2);
+      color: #a8a29e;
+      border: 1px solid rgba(120, 113, 108, 0.4);
     }
 
     .meta-edit-hero-grid {
@@ -2431,6 +2443,13 @@
       color: #94a3b8;
     }
 
+    .meta-tier-pick-btn.active-D {
+      background: #374151;
+      color: #9ca3af;
+      box-shadow: 0 0 6px rgba(107, 114, 128, 0.4);
+      border: 1px solid #6b7280;
+    }
+
     .btn-edit-meta-open {
       background: rgba(245, 186, 49, 0.15);
       border: 1px solid var(--gold-primary);
@@ -2540,7 +2559,7 @@
               </button>
             </div>
           </div>
-          <div class="meta-status-chip" id="metaStatusChip">✅ Tướng theo đường: TOP (39), Rừng (40), Mid (34), AD (21), SP (47) • Tỉ lệ: 50% S • 25% A • 20% B • 5% C</div>
+          <div class="meta-status-chip" id="metaStatusChip">✅ Tướng theo đường: TOP (39), Rừng (40), Mid (34), AD (21), SP (47) • Tỉ lệ: 40% S • 30% A • 18% B • 8% C • 4% D</div>
         </div>
       </div>
 
@@ -2730,7 +2749,7 @@
             </button>
           </div>
         </div>
-        <div class="meta-status-chip" id="metaStatusChipMode2">✅ Tướng theo đường: TOP (39), Rừng (40), Mid (34), AD (21), SP (47) • Tỉ lệ: 50% S • 25% A • 20% B • 5% C</div>
+        <div class="meta-status-chip" id="metaStatusChipMode2">✅ Tướng theo đường: TOP (39), Rừng (40), Mid (34), AD (21), SP (47) • Tỉ lệ: 40% S • 30% A • 18% B • 8% C • 4% D</div>
       </div>
       
 
@@ -3091,10 +3110,11 @@
         <!-- REAL-TIME STATS SUMMARY -->
         <div class="meta-stats-summary" id="metaEditorStats">
           <span>Đường <b>Tà Thần</b>:</span>
-          <span class="meta-stat-badge meta-stat-S">🔥 Tier S (50%): <b>8</b></span>
-          <span class="meta-stat-badge meta-stat-A">⭐ Tier A (25%): <b>15</b></span>
-          <span class="meta-stat-badge meta-stat-B">⚖️ Tier B (20%): <b>10</b></span>
-          <span class="meta-stat-badge meta-stat-C">💤 Tier C (5%): <b>6</b></span>
+          <span class="meta-stat-badge meta-stat-S">🔥 Tier S (40%): <b>3</b></span>
+          <span class="meta-stat-badge meta-stat-A">⭐ Tier A (30%): <b>9</b></span>
+          <span class="meta-stat-badge meta-stat-B">⚖️ Tier B (18%): <b>10</b></span>
+          <span class="meta-stat-badge meta-stat-C">💤 Tier C (8%): <b>8</b></span>
+          <span class="meta-stat-badge meta-stat-D">🍂 Tier D (4%): <b>8</b></span>
           <span style="color: var(--gold-light); margin-left: auto;">Đang trong đường: <b>39</b>/129 tướng</span>
         </div>
 
@@ -3113,9 +3133,9 @@
             </div>
             <div style="display: flex; align-items: center; gap: 4px;">
               <div class="meta-tier-seg-btns">
-                <button type="button" class="meta-tier-pick-btn active-S" onclick="setHeroTierInEditor(36, 'S')" title="Gán Tier S (50%)">S</button>
-                <button type="button" class="meta-tier-pick-btn " onclick="setHeroTierInEditor(36, 'A')" title="Gán Tier A (25%)">A</button>
-                <button type="button" class="meta-tier-pick-btn " onclick="setHeroTierInEditor(36, 'B')" title="Gán Tier B (20%)">B</button>
+                <button type="button" class="meta-tier-pick-btn active-S" onclick="setHeroTierInEditor(36, 'S')" title="Gán Tier S (40%)">S</button>
+                <button type="button" class="meta-tier-pick-btn " onclick="setHeroTierInEditor(36, 'A')" title="Gán Tier A (30%)">A</button>
+                <button type="button" class="meta-tier-pick-btn " onclick="setHeroTierInEditor(36, 'B')" title="Gán Tier B (18%)">B</button>
                 <button type="button" class="meta-tier-pick-btn " onclick="setHeroTierInEditor(36, 'C')" title="Gán Tier C (5%)">C</button>
               </div>
               
@@ -4517,21 +4537,23 @@
       "Arthur"
     ],
     "C": [
-      "Rourke",
       "Triệu Vân",
       "Wonder Woman",
       "Ata",
       "Lữ Bố",
-      "Charlotte",
-      "Arduin",
       "Bijan",
       "Allain",
-      "Amily",
       "Bolt Baron",
+      "Max"
+    ],
+    "D": [
+      "Rourke",
+      "Charlotte",
+      "Arduin",
+      "Amily",
       "Dextra",
       "Kaine",
       "Kil’Groth",
-      "Max",
       "Superman"
     ],
     "removed": [
@@ -4652,11 +4674,13 @@
       "Zuka"
     ],
     "C": [
-      "Triệu Vân",
       "Bright",
       "Kriknak",
       "Ngộ Không",
-      "Paine",
+      "Paine"
+    ],
+    "D": [
+      "Triệu Vân",
       "Kaine",
       "Quillen",
       "The Flash",
@@ -4799,11 +4823,13 @@
     "C": [
       "Kahlii",
       "Tulen",
-      "Điêu Thuyền",
       "Ilumia",
       "Jinna",
       "Krixi",
-      "Sephera",
+      "Sephera"
+    ],
+    "D": [
+      "Điêu Thuyền",
       "Bonnie",
       "Dirak",
       "Ishar",
@@ -4936,14 +4962,16 @@
       "Arthur"
     ],
     "C": [
-      "Ata",
       "Zip",
       "Roxie",
       "Xeniel",
       "Arduin",
       "Grakk",
       "Arum",
-      "Helen",
+      "Helen"
+    ],
+    "D": [
+      "Ata",
       "Ming",
       "Omega",
       "Lumburr",
@@ -5072,12 +5100,14 @@
       "Slimz"
     ],
     "C": [
-      "Yorn",
       "Celica",
       "Laville",
       "Tel’Annas",
       "Erin",
-      "Thorne",
+      "Thorne"
+    ],
+    "D": [
+      "Yorn",
       "Lindis",
       "Teeri"
     ],
@@ -5192,9 +5222,9 @@
       "Thane"
     ]
   },
-  "_buildId": 1793251382307,
+  "_buildId": 1793252487057,
   "_tierlqSync": {
-    "syncedAt": "12:23:02 29/10/2026",
+    "syncedAt": "12:41:27 29/10/2026",
     "patch": "15/10",
     "prevDate": "26/10"
   }
@@ -5255,6 +5285,7 @@
       if (m.A && m.A.includes(heroName)) return 'A';
       if (m.B && m.B.includes(heroName)) return 'B';
       if (m.C && m.C.includes(heroName)) return 'C';
+      if (m.D && m.D.includes(heroName)) return 'D';
       return 'REMOVED'; // Tướng nào không thuộc đường này mặc định là REMOVED (chưa thêm vào đường)
     }
 
@@ -5263,29 +5294,36 @@
     // • Tier A (Khá): 25%
     // • Tier B (Trung bình): 20%
     // • Tier C (Tệ / Đào thải): 5%
+    // PHÂN PHỐI TỈ LỆ CHUẨN XÁC 5 BẬC TIERLQ (S, A, B, C, D):
+    // • Tier S (Rất mạnh / Cấm Chọn): 40%
+    // • Tier A (Mạnh / An toàn leo rank): 30%
+    // • Tier B (Ổn định / Dùng tốt): 18%
+    // • Tier C (Tình huống / Cần đội hình): 8%
+    // • Tier D (Yếu / Thử thách): 4%
     const TARGET_TIER_PROBS = {
-      'S': 0.50,
-      'A': 0.25,
-      'B': 0.20,
-      'C': 0.05
+      'S': 0.40,
+      'A': 0.30,
+      'B': 0.18,
+      'C': 0.08,
+      'D': 0.04
     };
 
     function computeCandidateWeights(candidates, lane = null) {
-      const groups = { S: [], A: [], B: [], C: [] };
+      const groups = { S: [], A: [], B: [], C: [], D: [] };
       candidates.forEach(c => {
         const t = lane ? getHeroTierForLane(c.name, lane) : (c.tier || 'B');
         if (groups[t]) groups[t].push(c);
-        else groups.C.push(c);
+        else groups.D.push(c);
       });
 
       let totalTargetWeight = 0;
-      ['S', 'A', 'B', 'C'].forEach(t => {
+      ['S', 'A', 'B', 'C', 'D'].forEach(t => {
         if (groups[t].length > 0) totalTargetWeight += TARGET_TIER_PROBS[t];
       });
       if (totalTargetWeight === 0) totalTargetWeight = 1;
 
       const weights = new Map();
-      ['S', 'A', 'B', 'C'].forEach(t => {
+      ['S', 'A', 'B', 'C', 'D'].forEach(t => {
         const count = groups[t].length;
         if (count > 0) {
           const tierProb = TARGET_TIER_PROBS[t] / totalTargetWeight;
@@ -5329,7 +5367,7 @@
         counts[pos] = active;
       });
 
-      const statusText = `✅ Tướng theo đường: TOP (${counts.TOP || 0}), Rừng (${counts.JUNGLE || 0}), Mid (${counts.MID || 0}), AD (${counts.AD || 0}), SP (${counts.SUPPORT || 0}) • Tỉ lệ: 50% S • 25% A • 20% B • 5% C`;
+      const statusText = `✅ Tướng theo đường: TOP (${counts.TOP || 0}), Rừng (${counts.JUNGLE || 0}), Mid (${counts.MID || 0}), AD (${counts.AD || 0}), SP (${counts.SUPPORT || 0}) • Tỉ lệ: 40% S • 30% A • 18% B • 8% C • 4% D`;
 
       if (chip1) chip1.innerHTML = statusText;
       if (chip2) chip2.innerHTML = statusText;
@@ -6525,7 +6563,7 @@
         card.dataset.id = c.id;
         card.dataset.tier = c.tier;
 
-        const tierBadgeClass = c.tier === 'S' ? 'tier-badge-S' : (c.tier === 'A' ? 'tier-badge-A' : (c.tier === 'B' ? 'tier-badge-B' : 'tier-badge-C'));
+        const tierBadgeClass = c.tier === 'S' ? 'tier-badge-S' : (c.tier === 'A' ? 'tier-badge-A' : (c.tier === 'B' ? 'tier-badge-B' : (c.tier === 'C' ? 'tier-badge-C' : 'tier-badge-D')));
 
         card.innerHTML = `
           <span class="hero-tier-corner ${tierBadgeClass}">${c.tier}</span>
@@ -6675,7 +6713,7 @@
       if (!laneData.removed) laneData.removed = [];
 
       // Calculate counts for this lane
-      const counts = { S: 0, A: 0, B: 0, C: 0, REMOVED: 0 };
+      const counts = { S: 0, A: 0, B: 0, C: 0, D: 0, REMOVED: 0 };
       ALL_CHAMPIONS.forEach(c => {
         const t = getHeroTierForLane(c.name, lane);
         counts[t]++;
@@ -6714,7 +6752,7 @@
       }
 
       // Sort: S first, then A, then B, then C, then REMOVED, then alphabetical
-      const tierRank = { 'S': 0, 'A': 1, 'B': 2, 'C': 3, 'REMOVED': 4 };
+      const tierRank = { 'S': 0, 'A': 1, 'B': 2, 'C': 3, 'D': 4, 'REMOVED': 5 };
       list.sort((a, b) => {
         const tA = getHeroTierForLane(a.name, lane);
         const tB = getHeroTierForLane(b.name, lane);
@@ -6761,7 +6799,8 @@
                 <button type="button" class="meta-tier-pick-btn ${currentTier === 'S' ? 'active-S' : ''}" onclick="setHeroTierInEditor(${c.id}, 'S')" title="Gán Tier S (50%)">S</button>
                 <button type="button" class="meta-tier-pick-btn ${currentTier === 'A' ? 'active-A' : ''}" onclick="setHeroTierInEditor(${c.id}, 'A')" title="Gán Tier A (25%)">A</button>
                 <button type="button" class="meta-tier-pick-btn ${currentTier === 'B' ? 'active-B' : ''}" onclick="setHeroTierInEditor(${c.id}, 'B')" title="Gán Tier B (20%)">B</button>
-                <button type="button" class="meta-tier-pick-btn ${currentTier === 'C' ? 'active-C' : ''}" onclick="setHeroTierInEditor(${c.id}, 'C')" title="Gán Tier C (5%)">C</button>
+                <button type="button" class="meta-tier-pick-btn ${currentTier === 'C' ? 'active-C' : ''}" onclick="setHeroTierInEditor(${c.id}, 'C')" title="Gán Tier C (8%)">C</button>
+                <button type="button" class="meta-tier-pick-btn ${currentTier === 'D' ? 'active-D' : ''}" onclick="setHeroTierInEditor(${c.id}, 'D')" title="Gán Tier D (4%)">D</button>
               </div>
               ${!isInLane ? `
                 <button type="button" class="meta-btn-add-lane" onclick="addHeroToLane(${c.id})" title="Thêm tướng này vào đường ${POSITION_NAMES[lane]}">
@@ -6793,7 +6832,7 @@
       if (rIdx !== -1) m.removed.splice(rIdx, 1);
 
       // Remove hero from other tiers in this lane
-      ['S', 'A', 'B', 'C'].forEach(t => {
+      ['S', 'A', 'B', 'C', 'D'].forEach(t => {
         if (m[t]) {
           const idx = m[t].indexOf(heroName);
           if (idx !== -1) m[t].splice(idx, 1);
@@ -6824,7 +6863,7 @@
       if (!m.removed) m.removed = [];
 
       // Remove from S, A, B, C
-      ['S', 'A', 'B', 'C'].forEach(t => {
+      ['S', 'A', 'B', 'C', 'D'].forEach(t => {
         if (m[t]) {
           const idx = m[t].indexOf(heroName);
           if (idx !== -1) m[t].splice(idx, 1);
@@ -6858,7 +6897,7 @@
       }
 
       // Add to target tier if not already in S, A, B, C
-      const inTier = ['S', 'A', 'B', 'C'].some(t => m[t] && m[t].includes(heroName));
+      const inTier = ['S', 'A', 'B', 'C', 'D'].some(t => m[t] && m[t].includes(heroName));
       if (!inTier) {
         if (!m[targetTier]) m[targetTier] = [];
         m[targetTier].push(heroName);
@@ -7128,11 +7167,11 @@
         });
 
         const newLaneMeta = {
-          TOP: { S: [], A: [], B: [], C: [], removed: [] },
-          JUNGLE: { S: [], A: [], B: [], C: [], removed: [] },
-          MID: { S: [], A: [], B: [], C: [], removed: [] },
-          SUPPORT: { S: [], A: [], B: [], C: [], removed: [] },
-          AD: { S: [], A: [], B: [], C: [], removed: [] }
+          TOP: { S: [], A: [], B: [], C: [], D: [], removed: [] },
+          JUNGLE: { S: [], A: [], B: [], C: [], D: [], removed: [] },
+          MID: { S: [], A: [], B: [], C: [], D: [], removed: [] },
+          SUPPORT: { S: [], A: [], B: [], C: [], D: [], removed: [] },
+          AD: { S: [], A: [], B: [], C: [], D: [], removed: [] }
         };
 
         heroesList.forEach(h => {
@@ -7142,9 +7181,8 @@
           const exactName = champMap.get(norm(h.name)) || h.name;
           if (!ALL_CHAMPIONS.some(c => c.name === exactName)) return;
 
-          // Tier D trong TierLQ được gom vào nhóm Tier C (5% xác suất)
-          const t = (h.tier === 'D' ? 'C' : h.tier) || 'C';
-          if (['S', 'A', 'B', 'C'].includes(t)) {
+          const t = h.tier || 'D';
+          if (['S', 'A', 'B', 'C', 'D'].includes(t)) {
             if (!newLaneMeta[targetLane][t].includes(exactName)) {
               newLaneMeta[targetLane][t].push(exactName);
             }
@@ -7157,7 +7195,8 @@
             ...newLaneMeta[pos].S,
             ...newLaneMeta[pos].A,
             ...newLaneMeta[pos].B,
-            ...newLaneMeta[pos].C
+            ...newLaneMeta[pos].C,
+            ...newLaneMeta[pos].D
           ]);
           newLaneMeta[pos].removed = ALL_CHAMPIONS
             .filter(c => !activeInLane.has(c.name))
