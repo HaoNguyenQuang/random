@@ -446,32 +446,43 @@ export default function ModeTeam5v5({
             const champ = CHAMP_LOOKUP[p.champId];
             const tier = champ ? getHeroTierForLane(champ.name, role, laneMeta) : '---';
 
+            const shortRoleMap = {
+              TOP: 'TOP',
+              MID: 'MID',
+              AD: 'AD',
+              SUPPORT: 'SP',
+              SP: 'SP',
+              JUNGLE: 'JG'
+            };
+            const roleShort = shortRoleMap[role] || role;
+
             return (
               <div 
                 key={idx} 
                 className={`esports-card ${isRolling ? 'card-rolling' : ''}`}
                 style={{ '--card-accent': cfg.color }}
               >
-                {/* ROLE HEADER */}
+                {/* 1. FIXED-WIDTH ROLE BADGE */}
                 <div className="card-role-header">
                   <div className="role-indicator">
                     <span className="role-icon">{cfg.icon}</span>
                     <div className="role-info">
-                      <span className="role-tag">{role}</span>
+                      <span className="role-tag role-tag-desktop">{role}</span>
+                      <span className="role-tag role-tag-mobile">{roleShort}</span>
                       <span className="role-name">{cfg.name}</span>
                     </div>
                   </div>
 
                   <button
-                    className={`lock-icon-btn ${p.lockRole ? 'locked' : ''}`}
+                    className={`lock-icon-btn lock-role-btn ${p.lockRole ? 'locked' : ''}`}
                     onClick={() => toggleLockRole(idx)}
                     title={p.lockRole ? 'Đã khóa vị trí này' : 'Khóa vị trí này'}
                   >
-                    {p.lockRole ? <Lock size={14} /> : <Unlock size={14} />}
+                    {p.lockRole ? <Lock size={12} /> : <Unlock size={12} />}
                   </button>
                 </div>
 
-                {/* CHAMPION AVATAR & VISUAL */}
+                {/* 2. CHAMPION AVATAR (CLEAN & UNCLUTTERED) */}
                 <div className="card-avatar-wrap">
                   <div className={`card-avatar-inner ${isRolling ? 'avatar-flip' : ''}`}>
                     {champ ? (
@@ -483,43 +494,43 @@ export default function ModeTeam5v5({
                       />
                     ) : (
                       <div className="hero-avatar-placeholder">
-                        <Sparkles size={32} />
+                        <Sparkles size={24} />
                         <span>Sẵn sàng</span>
                       </div>
                     )}
                   </div>
-
-                  {/* TIER BADGE */}
-                  {champ && tier && tier !== 'REMOVED' && (
-                    <div className={`tier-badge tier-badge-${tier}`}>
-                      <span>TIER {tier}</span>
-                    </div>
-                  )}
                 </div>
 
-                {/* CHAMPION NAME & INFO */}
+                {/* 3. CHAMPION NAME & INLINE TIER BADGE */}
                 <div className="card-champ-body">
-                  <div className="champ-name">{champ ? champ.name : '---'}</div>
+                  <div className="champ-name-row">
+                    <span className="champ-name">{champ ? champ.name : '---'}</span>
+                    {champ && tier && tier !== 'REMOVED' && (
+                      <span className={`tier-badge-pill tier-badge-${tier}`}>
+                        TIER {tier}
+                      </span>
+                    )}
+                  </div>
                   <div className="champ-role-desc">
-                    {champ ? (champ.roles ? champ.roles.join(' • ') : cfg.name) : 'Bấm random để chọn'}
+                    {champ ? (champ.roles ? champ.roles.join(' • ') : cfg.name) : 'Bấm random'}
                   </div>
                 </div>
 
-                {/* PLAYER FOOTER */}
+                {/* 4. PLAYER FOOTER & SINGLE ACTIONS */}
                 <div className="card-player-footer">
                   <div className="player-tag">
-                    <User size={13} />
-                    <span className="player-display-name">{p.name || `Người chơi ${idx + 1}`}</span>
+                    <User size={11} />
+                    <span className="player-display-name">{p.name || `P${idx + 1}`}</span>
                   </div>
 
                   <div className="card-item-actions">
                     <button
-                      className={`lock-icon-btn ${p.lockChamp ? 'locked' : ''}`}
+                      className={`lock-icon-btn lock-champ-btn ${p.lockChamp ? 'locked' : ''}`}
                       onClick={() => toggleLockChamp(idx)}
                       disabled={!champ}
                       title={p.lockChamp ? 'Đã khóa tướng này' : 'Khóa tướng này'}
                     >
-                      {p.lockChamp ? <Lock size={13} /> : <Unlock size={13} />}
+                      {p.lockChamp ? <Lock size={12} /> : <Unlock size={12} />}
                     </button>
 
                     <button
