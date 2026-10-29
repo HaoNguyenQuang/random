@@ -489,6 +489,29 @@ body {
   color: var(--gold-light);
 }
 
+.player-title-toggle {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.player-names-summary {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cyan-neon);
+  margin-left: 2px;
+}
+
+.player-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .title-icon { color: var(--gold-bright); }
 
 .player-inputs-grid {
@@ -2066,191 +2089,389 @@ body {
     flex-shrink: 0;
   }
 
-  /* CONTROLS & PLAYER NAMES */
+  /* CONTROLS & PLAYER NAMES (COMPACT & COLLAPSIBLE ON MOBILE) */
   .controls-panel {
-    padding: 12px 10px;
-    border-radius: 14px;
+    padding: 8px 10px;
+    border-radius: 12px;
     width: 100%;
     box-sizing: border-box;
   }
   .section-title-wrap {
-    flex-wrap: wrap;
-    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 0px;
   }
   .section-title {
-    font-size: 13px;
+    font-size: 12px;
+    min-width: 0;
+  }
+  .player-title-toggle {
+    min-width: 0;
+    flex: 1;
+  }
+  .player-title-text {
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+  .player-names-summary {
+    font-size: 11px;
+    color: var(--cyan-neon);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+  .player-header-actions {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .player-header-actions .secondary-btn {
+    padding: 5px 7px;
+    font-size: 10.5px;
+  }
+  .btn-label-desktop {
+    display: none;
   }
   .player-inputs-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 6px;
     width: 100%;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .player-inputs-grid > :nth-child(5) {
+    grid-column: span 2;
   }
   .player-input-card {
-    padding: 6px 10px;
+    padding: 5px 8px;
   }
   .player-name-field {
-    font-size: 13px;
+    font-size: 12px;
   }
 
-  /* CYBER SWITCH CONTAINER */
+  /* CYBER SWITCH CONTAINER (SLEEK & SLIM BANNER) */
   .switch-banner-section {
     width: 100%;
+    margin: 8px 0 10px;
+    gap: 6px;
   }
   .cyber-switch-container {
-    padding: 10px 10px;
-    border-radius: 16px;
-    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 14px;
+    gap: 8px;
     width: 100%;
+    min-height: 40px;
     box-sizing: border-box;
   }
   .switch-toggle-track {
-    width: 44px;
-    height: 24px;
+    width: 40px;
+    height: 22px;
     flex-shrink: 0;
   }
   .switch-toggle-thumb {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    top: 3px;
+    left: 3px;
   }
   .cyber-switch-container.active .switch-toggle-thumb {
-    transform: translateX(20px);
+    transform: translateX(18px);
   }
   .switch-text-group {
     min-width: 0;
     flex: 1;
   }
   .switch-label-text {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
-    line-height: 1.35;
+    line-height: 1.25;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
   }
   .switch-label-text svg {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
   }
   .switch-status-pill {
-    font-size: 9.5px;
-    padding: 2px 6px;
-    border-radius: 8px;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 6px;
   }
   .switch-sub-desc {
-    font-size: 10.5px;
-    line-height: 1.35;
-    margin-top: 4px;
+    display: none; /* Hide verbose subtitle text on mobile to save vertical space */
   }
 
-  /* EXCLUDED PREVIEW CHIPS */
+  /* EXCLUDED PREVIEW CHIPS (SLIM ROW) */
   .excluded-preview-strip {
-    padding: 6px 10px;
-    border-radius: 12px;
+    padding: 4px 8px;
+    border-radius: 10px;
     width: 100%;
     box-sizing: border-box;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
   }
   .strip-title {
-    font-size: 11px;
+    font-size: 10px;
   }
   .strip-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-  }
-  .champ-mini-chip {
-    padding: 3px 6px 3px 3px;
-    font-size: 10.5px;
     gap: 4px;
   }
+  .champ-mini-chip {
+    padding: 2px 5px 2px 2px;
+    font-size: 10px;
+    gap: 3px;
+  }
   .champ-mini-chip img {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 
-  /* ACTION BUTTONS */
+  /* ACTION BUTTONS (PROPORTIONAL & COMPACT) */
   .main-actions-bar {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
+    margin-bottom: 10px;
   }
   .cyber-glow-btn {
     width: 100%;
-    padding: 13px 16px;
-    font-size: 15px;
+    padding: 11px 14px;
+    font-size: 14px;
     font-weight: 900;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
+    border-radius: 10px;
   }
   .cyber-glow-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
   .secondary-actions-group {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: 100%;
-    gap: 5px;
+    gap: 4px;
   }
   .secondary-btn {
     width: 100%;
-    padding: 8px 3px;
-    font-size: 10.5px;
+    padding: 6px 2px;
+    font-size: 10px;
     justify-content: center;
     text-align: center;
     min-width: 0;
     white-space: nowrap;
   }
   .secondary-btn svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
     flex-shrink: 0;
   }
 
-  /* TEAM ARENA WRAPPER & CARDS */
+  /* TEAM ARENA WRAPPER & SLEEK HORIZONTAL ROWS (ALL 5 PLAYERS VISIBLE!) */
   .team-arena-wrapper {
-    padding: 12px 8px;
-    border-radius: 16px;
+    padding: 8px 6px;
+    border-radius: 14px;
     width: 100%;
     box-sizing: border-box;
   }
   .team-arena-header {
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    flex-wrap: wrap;
-    gap: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .arena-title {
-    font-size: 14.5px;
+    font-size: 13px;
   }
   .arena-badge {
-    font-size: 9.5px;
-    padding: 3px 7px;
+    font-size: 8.5px;
+    padding: 2px 5px;
   }
   .team-arena-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     width: 100%;
   }
   .esports-card {
-    border-radius: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 4px solid var(--card-accent, #f5ba31);
+    border-radius: 9px;
+    padding: 4px 6px;
+    background: #090d1c;
+    min-height: 48px;
+    gap: 6px;
     width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease;
+  }
+  .card-role-header {
+    background: transparent;
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 52px;
+  }
+  .role-indicator {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .role-icon {
+    font-size: 13px;
+  }
+  .role-tag {
+    font-size: 10.5px;
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+  }
+  .role-name {
+    display: none;
+  }
+  .card-role-header .lock-icon-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    padding: 0;
+  }
+  .card-role-header .lock-icon-btn svg {
+    width: 10px;
+    height: 10px;
+  }
+  .card-avatar-wrap {
+    padding: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 38px;
+    height: 38px;
   }
   .card-avatar-inner {
-    width: 80px;
-    height: 80px;
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--gold-primary);
+    box-shadow: 0 0 8px rgba(245, 186, 49, 0.4);
+  }
+  .tier-badge {
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 7.5px;
+    font-weight: 900;
+    padding: 0px 3px;
+    border-radius: 3px;
+    line-height: 1.2;
+    white-space: nowrap;
+    margin: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  }
+  .card-champ-body {
+    padding: 0 4px;
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .champ-name {
-    font-size: 15px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0px;
+  }
+  .champ-role-desc {
+    font-size: 9px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-player-footer {
+    background: transparent;
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .player-tag {
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    border-radius: 5px;
+    padding: 2px 5px;
+    gap: 3px;
+    display: flex;
+    align-items: center;
+    max-width: 68px;
+  }
+  .player-tag svg {
+    width: 9px;
+    height: 9px;
+    color: #ffd700;
   }
   .player-display-name {
-    max-width: 90px;
-    font-size: 12px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #ffd700;
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .card-item-actions .lock-icon-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    padding: 0;
+  }
+  .card-item-actions .lock-icon-btn svg {
+    width: 10px;
+    height: 10px;
+  }
+  .reroll-single-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    padding: 0;
+  }
+  .reroll-single-btn svg {
+    width: 10px;
+    height: 10px;
   }
 
   /* MODALS & OTHER COMPONENTS */

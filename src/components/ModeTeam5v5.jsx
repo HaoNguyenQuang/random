@@ -14,7 +14,10 @@ import {
   Shuffle,
   Dice5,
   Flame,
-  Zap
+  Zap,
+  ChevronDown,
+  ChevronUp,
+  Edit3
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
@@ -46,6 +49,7 @@ export default function ModeTeam5v5({
   const [isRolling, setIsRolling] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [showPlayerInputs, setShowPlayerInputs] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   const arenaRef = useRef(null);
 
   // Dual-cannon confetti celebration
@@ -264,43 +268,65 @@ export default function ModeTeam5v5({
 
   return (
     <div className="tab-pane active">
-      {/* 1. PLAYER NAMES INPUT BAR */}
+      {/* 1. PLAYER NAMES INPUT BAR (COLLAPSIBLE ON MOBILE) */}
       <section className="controls-panel">
         <div className="section-title-wrap">
-          <div className="section-title">
-            <User size={18} className="title-icon" />
-            <span>DANH SÁCH 5 NGƯỜI CHƠI</span>
-          </div>
-          <button 
-            className="secondary-btn btn-sm"
-            onClick={handleRandomizeNames}
-            title="Đổi nhanh tên hài hước cho 5 người chơi"
+          <div 
+            className="section-title player-title-toggle"
+            onClick={() => setShowPlayerInputs(!showPlayerInputs)}
+            title="Bấm để ẩn/hiện bảng nhập tên"
           >
-            <Dice5 size={14} /> Nickname Vui
-          </button>
+            <User size={16} className="title-icon" />
+            <span className="player-title-text">NGƯỜI CHƠI:</span>
+            <span className="player-names-summary">
+              {players.map(p => p.name || '---').join(', ')}
+            </span>
+          </div>
+
+          <div className="player-header-actions">
+            <button 
+              className="secondary-btn btn-sm"
+              onClick={handleRandomizeNames}
+              title="Đổi nhanh tên hài hước cho 5 người chơi"
+            >
+              <Dice5 size={13} /> <span className="btn-label-desktop">Nickname Vui</span>
+            </button>
+
+            <button
+              className="secondary-btn btn-sm toggle-names-btn"
+              onClick={() => setShowPlayerInputs(!showPlayerInputs)}
+              title={showPlayerInputs ? "Thu gọn để tiết kiệm chỗ" : "Mở để sửa tên 5 người chơi"}
+            >
+              <Edit3 size={13} />
+              <span>{showPlayerInputs ? 'Thu gọn' : 'Đổi tên'}</span>
+              {showPlayerInputs ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+            </button>
+          </div>
         </div>
 
-        <div className="player-inputs-grid">
-          {players.map((p, idx) => {
-            const defaultNames = ['Minh', 'Vũ', 'Hào', 'Công', 'Đức'];
-            return (
-              <div key={idx} className="player-input-card">
-                <span className="player-num-badge">{idx + 1}</span>
-                <input
-                  type="text"
-                  className="player-name-field"
-                  placeholder={defaultNames[idx] || `Người chơi ${idx + 1}`}
-                  value={p.name}
-                  onChange={(e) => {
-                    const updated = [...players];
-                    updated[idx] = { ...updated[idx], name: e.target.value };
-                    setPlayers(updated);
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+        {showPlayerInputs && (
+          <div className="player-inputs-grid animate-fadeIn">
+            {players.map((p, idx) => {
+              const defaultNames = ['Minh', 'Vũ', 'Hào', 'Công', 'Đức'];
+              return (
+                <div key={idx} className="player-input-card">
+                  <span className="player-num-badge">{idx + 1}</span>
+                  <input
+                    type="text"
+                    className="player-name-field"
+                    placeholder={defaultNames[idx] || `Người chơi ${idx + 1}`}
+                    value={p.name}
+                    onChange={(e) => {
+                      const updated = [...players];
+                      updated[idx] = { ...updated[idx], name: e.target.value };
+                      setPlayers(updated);
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* 2. PROMINENT CYBER SWITCH: KHÔNG LẶP LẠI VỊ TRÍ & TƯỚNG LẦN QUAY TRƯỚC */}
