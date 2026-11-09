@@ -110,7 +110,7 @@ export default function MetaEditorModal({
               className="sync-live-btn"
               onClick={onSyncTierLQ}
               disabled={isSyncing}
-              title="Đồng bộ cập nhật mới nhất từ TierLQ.github.io"
+              title="Đồng bộ cập nhật mới nhất từ TierLQ.com"
             >
               <RefreshCw size={14} className={isSyncing ? 'animate-spin' : ''} />
               <span>{isSyncing ? 'Đang tải...' : 'Đồng Bộ TierLQ'}</span>

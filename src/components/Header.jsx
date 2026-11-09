@@ -99,7 +99,7 @@ export default function Header({
             className="icon-btn sync-live"
             onClick={onSyncTierLQ}
             disabled={isSyncing}
-            title={syncInfo?.patch ? `Đã đồng bộ TierLQ Bản ${syncInfo.patch}` : 'Đồng bộ Meta mới nhất từ TierLQ.github.io'}
+            title={syncInfo?.patch ? `Đã đồng bộ TierLQ Bản ${syncInfo.patch}` : 'Đồng bộ Meta mới nhất từ TierLQ.com'}
           >
             <RefreshCw size={13} className={isSyncing ? 'animate-spin' : ''} />
             <span>{isSyncing ? 'Đang tải...' : 'Đồng Bộ'}</span>

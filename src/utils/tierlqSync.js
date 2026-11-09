@@ -1,20 +1,32 @@
 import { ALL_CHAMPIONS, POSITIONS } from '../data/champions';
 
 export async function fetchTierLQMeta() {
-  const url = 'https://tierlq.github.io/assets/data.js';
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 5000);
+  const urls = [
+    'https://tierlq.com/assets/data.js',
+    'https://tierlq.github.io/assets/data.js'
+  ];
 
   let code = '';
-  try {
-    const resp = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    code = await resp.text();
-  } catch (err) {
-    clearTimeout(timeoutId);
-    throw err;
+  let lastErr = null;
+
+  for (const url of urls) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    try {
+      const resp = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      code = await resp.text();
+      if (code) break;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      lastErr = err;
+    }
+  }
+
+  if (!code) {
+    throw lastErr || new Error('Không thể tải dữ liệu từ máy chủ TierLQ');
   }
 
   const runner = new Function(code + '\nreturn { HEROES, PATCH, PREV_DATE, SRC };');
