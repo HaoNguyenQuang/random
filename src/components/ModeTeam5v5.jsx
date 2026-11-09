@@ -402,9 +402,9 @@ export default function ModeTeam5v5({
           <div className="switch-text-group">
             <div className="switch-label-text">
               <RefreshCw size={18} className={isNoRepeatPrevious ? 'rotate-glow' : ''} />
-              <span>KHÔNG LẶP LẠI VỊ TRÍ & TƯỚNG CỦA LẦN QUAY TRƯỚC</span>
+              <span className="switch-main-heading">LUẬT FEARLESS DRAFT • ĐỔI LANE & KHÓA TƯỚNG VÁN TRƯỚC</span>
               <span className={`switch-status-pill ${isNoRepeatPrevious ? 'pill-on' : 'pill-off'}`}>
-                {isNoRepeatPrevious ? '✓ ĐANG BẬT (ĐỔI LANE & TƯỚNG)' : '✕ ĐANG TẮT'}
+                {isNoRepeatPrevious ? '✓ ĐANG BẬT (CHỐNG TRÙNG 100%)' : '✕ ĐANG TẮT'}
               </span>
             </div>
 
@@ -412,12 +412,12 @@ export default function ModeTeam5v5({
               {isNoRepeatPrevious ? (
                 <span className="desc-active">
                   <ShieldCheck size={14} />
-                  Mỗi người chơi (Minh, Vũ, Hào, Công, Đức) sẽ được <strong>đổi vị trí (lane) và nhận tướng mới</strong>, không lặp lại ván trước!
+                  Chuẩn Đấu Trường Danh Vọng: 5 người chơi tự động <strong>đổi sang vị trí mới</strong> và <strong>loại bỏ 5 tướng ván trước</strong>!
                 </span>
               ) : (
                 <span className="desc-inactive">
                   <ShieldAlert size={14} />
-                  Đang tắt: Các lần quay là độc lập, vị trí và tướng có thể xuất hiện lại bình thường.
+                  Đang tắt: Các lượt quay hoàn toàn độc lập, vị trí và tướng có thể trùng lặp lại ván trước.
                 </span>
               )}
             </div>
@@ -428,13 +428,14 @@ export default function ModeTeam5v5({
         {isNoRepeatPrevious && excludedPrevChamps.length > 0 && (
           <div className="excluded-preview-strip animate-fadeIn">
             <span className="strip-title">
-              <Zap size={14} /> 5 tướng lần trước bị khóa:
+              <Flame size={14} color="#ff3366" /> 5 tướng ván trước bị cấm chọn:
             </span>
             <div className="strip-chips">
               {excludedPrevChamps.map(c => (
-                <div key={c.id} className="champ-mini-chip">
+                <div key={c.id} className="champ-mini-chip banned-chip" title={`${c.name} bị cấm trong ván này`}>
                   <img src={c.avatar} alt={c.name} />
-                  <span>{c.name}</span>
+                  <span className="chip-name">{c.name}</span>
+                  <span className="ban-badge">CẤM</span>
                 </div>
               ))}
             </div>
@@ -446,21 +447,26 @@ export default function ModeTeam5v5({
       <div className="main-actions-bar">
         <button
           id="btnRollTeam"
-          className="cyber-glow-btn primary-action-btn"
+          className="cyber-glow-btn primary-action-btn tournament-main-btn"
           onClick={handleRandomTeam}
           disabled={isRolling}
         >
-          <Swords size={24} className={isRolling ? 'animate-spin' : ''} />
-          <span>{isRolling ? '⚡ ĐANG PHÂN LANE & TƯỚNG...' : '⚔️ BẮT ĐẦU CẤM / CHỌN 5V5'}</span>
+          <span className="btn-wing left" aria-hidden="true" />
+          <Swords size={22} className={isRolling ? 'animate-spin' : 'btn-swords-icon'} />
+          <span className="btn-text-content">
+            {isRolling ? '⚡ ĐANG PHÂN LANE & BAN/PICK...' : '⚔️ BẮT ĐẦU TRANH HÙNG (CẤM / CHỌN)'}
+          </span>
+          <kbd className="kbd-shortcut-hint">SPACE</kbd>
+          <span className="btn-wing right" aria-hidden="true" />
         </button>
 
         <div className="secondary-actions-group">
           <button 
             className="secondary-btn"
             onClick={handleUnlockAll}
-            title="Mở khóa tất cả vị trí và tướng"
+            title="Mở khóa tất cả vị trí và tướng (phím L)"
           >
-            <Unlock size={15} /> Mở Khóa Tất Cả
+            <Unlock size={14} /> <span>Mở Khóa Tất Cả</span>
           </button>
 
           <button 
@@ -468,7 +474,7 @@ export default function ModeTeam5v5({
             onClick={handleCopyText}
             title="Sao chép đội hình dạng văn bản để gửi bạn bè"
           >
-            {copySuccess ? <Check size={15} color="#10b981" /> : <Copy size={15} />}
+            {copySuccess ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
             <span>{copySuccess ? 'Đã Sao Chép!' : 'Sao Chép Text'}</span>
           </button>
 
@@ -476,10 +482,10 @@ export default function ModeTeam5v5({
             className="secondary-btn"
             onClick={handleExportImage}
             disabled={isCapturing}
-            title="Chụp ảnh đội hình chất lượng cao PNG"
+            title="Chụp ảnh đội hình chất lượng cao PNG chuẩn Esports"
           >
-            <Download size={15} />
-            <span>{isCapturing ? 'Đang Tạo Ảnh...' : 'Xuất Ảnh PNG'}</span>
+            <Download size={14} />
+            <span>{isCapturing ? 'Đang Tạo Ảnh...' : 'Xuất Ảnh Đội Hình'}</span>
           </button>
         </div>
       </div>
@@ -487,17 +493,24 @@ export default function ModeTeam5v5({
       {/* 4. TEAM 5V5 ARENA CARDS */}
       <div className="team-arena-wrapper" ref={arenaRef}>
         <div className="team-arena-header">
-          <div className="flex-row items-center gap-2">
-            <Flame size={20} color="#f5ba31" />
-            <span className="arena-title">BÌNH NGUYÊN VÔ TẬN • ĐỘI HÌNH 5V5</span>
+          <div className="arena-header-left">
+            <div className="arena-title-icon-box">
+              <Flame size={20} color="#ffd700" />
+            </div>
+            <div>
+              <div className="arena-title">BÌNH NGUYÊN VÔ TẬN • ĐỘI HÌNH THI ĐẤU 5V5</div>
+              <div className="arena-sub-title">HỆ THỐNG PHÂN LANE CHUẨN TIERLQ META S4 2026</div>
+            </div>
           </div>
-          <span className="arena-badge">ĐẤU TRƯỜNG DANH VỌNG S4</span>
+          <div className="arena-header-right">
+            <span className="arena-badge">🏆 ĐẤU TRƯỜNG DANH VỌNG</span>
+          </div>
         </div>
 
         <div className="team-arena-grid">
           {players.map((p, idx) => {
             const role = p.role || POSITIONS[idx];
-            const cfg = POSITION_CONFIG[role] || { name: 'TOP', icon: '⚔️', color: '#ff4757', desc: 'Đường Tà Thần' };
+            const cfg = POSITION_CONFIG[role] || { name: 'Tà Thần', short: 'TOP', icon: '⚔️', color: '#ff4757', desc: 'Đường Tà Thần' };
             const champ = CHAMP_LOOKUP[p.champId];
             const tier = champ ? getHeroTierForLane(champ.name, role, laneMeta) : '---';
 
@@ -507,7 +520,7 @@ export default function ModeTeam5v5({
               AD: 'AD',
               SUPPORT: 'SP',
               SP: 'SP',
-              JUNGLE: 'JG'
+              JUNGLE: 'RỪNG'
             };
             const roleShort = shortRoleMap[role] || role;
 
@@ -516,85 +529,92 @@ export default function ModeTeam5v5({
                 key={idx} 
                 className={`esports-card ${isRolling ? 'card-rolling' : ''} tier-aura-${tier}`}
                 style={{ '--card-accent': cfg.color }}
+                onMouseMove={handleCardMouseMove}
               >
-                {/* 1. FIXED-WIDTH ROLE BADGE */}
-                <div className="card-role-header">
-                  <div className="role-indicator">
-                    <span className="role-icon">{cfg.icon}</span>
-                    <div className="role-info">
-                      <span className="role-tag role-tag-desktop">{role}</span>
-                      <span className="role-tag role-tag-mobile">{roleShort}</span>
-                      <span className="role-name">{cfg.name}</span>
+                {/* 1. LANE HEADER WITH ICON & LOCK BUTTON */}
+                <div className="card-lane-header">
+                  <div className="lane-crest">
+                    <span className="lane-icon">{cfg.icon}</span>
+                    <div className="lane-meta">
+                      <span className="lane-title lane-desktop">{role}</span>
+                      <span className="lane-title lane-mobile">{roleShort}</span>
+                      <span className="lane-sub">{cfg.name}</span>
                     </div>
                   </div>
 
                   <button
-                    className={`lock-icon-btn lock-role-btn ${p.lockRole ? 'locked' : ''}`}
+                    className={`rune-btn lock-lane-btn ${p.lockRole ? 'locked' : ''}`}
                     onClick={() => toggleLockRole(idx)}
-                    title={p.lockRole ? 'Đã khóa vị trí này' : 'Khóa vị trí này'}
+                    title={p.lockRole ? 'Vị trí đã khóa, không đổi khi quay' : 'Khóa cố định vị trí này'}
                   >
                     {p.lockRole ? <Lock size={12} /> : <Unlock size={12} />}
+                    <span className="lock-text-hint">{p.lockRole ? 'KHÓA' : 'LANE'}</span>
                   </button>
                 </div>
 
-                {/* 2. CHAMPION AVATAR (CLEAN & UNCLUTTERED) */}
-                <div className="card-avatar-wrap">
-                  <div className={`card-avatar-inner ${isRolling ? 'avatar-flip' : ''}`}>
+                {/* 2. HERO PORTRAIT STAGE (ATHANOR MOBA CARD FRAME) */}
+                <div className="hero-portrait-stage">
+                  <div className={`hero-portrait-frame ${isRolling ? 'portrait-flip' : ''}`}>
                     {champ ? (
-                      <img 
-                        src={champ.avatar} 
-                        alt={champ.name}
-                        className="hero-avatar-img"
-                        loading="eager"
-                      />
+                      <>
+                        <img 
+                          src={champ.avatar} 
+                          alt={champ.name}
+                          className="hero-portrait-img"
+                          loading="eager"
+                        />
+                        <div className="hero-portrait-vignette" />
+                        
+                        {tier && tier !== 'REMOVED' && (
+                          <div className={`hero-tier-ribbon tier-${tier}`}>
+                            <span className="tier-star">{tier === 'S' ? '👑' : tier === 'A' ? '⭐' : '⚡'}</span>
+                            <span className="tier-label">TIER {tier}</span>
+                          </div>
+                        )}
+                      </>
                     ) : (
-                      <div className="hero-avatar-placeholder">
-                        <Sparkles size={24} />
-                        <span>Sẵn sàng</span>
+                      <div className="hero-empty-stage">
+                        <Sparkles size={28} className="empty-sparkle" />
+                        <span>SẴN SÀNG</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* 3. CHAMPION NAME & INLINE TIER BADGE */}
-                <div className="card-champ-body">
-                  <div className="champ-name-row">
-                    <span className="champ-name">{champ ? champ.name : '---'}</span>
-                    {champ && tier && tier !== 'REMOVED' && (
-                      <span className={`tier-badge-pill tier-badge-${tier}`}>
-                        TIER {tier}
-                      </span>
-                    )}
+                {/* 3. HERO NAME & ROLES */}
+                <div className="hero-details">
+                  <div className="hero-name-wrap">
+                    <h3 className="hero-display-name">{champ ? champ.name : '---'}</h3>
                   </div>
-                  <div className="champ-role-desc">
-                    {champ ? (champ.roles ? champ.roles.join(' • ') : cfg.name) : 'Bấm random'}
+                  <div className="hero-role-sub">
+                    {champ ? (champ.roles ? champ.roles.join(' • ') : cfg.name) : 'Bấm Cấm/Chọn'}
                   </div>
                 </div>
 
-                {/* 4. PLAYER FOOTER & SINGLE ACTIONS */}
-                <div className="card-player-footer">
-                  <div className="player-tag">
-                    <User size={11} />
-                    <span className="player-display-name">{p.name || `P${idx + 1}`}</span>
+                {/* 4. PLAYER FOOTER & QUICK RUNES */}
+                <div className="card-player-bar">
+                  <div className="player-slot-badge" title={`Tuyển thủ vị trí ${idx + 1}`}>
+                    <span className="slot-num">#{idx + 1}</span>
+                    <span className="player-name-text">{p.name || `P${idx + 1}`}</span>
                   </div>
 
-                  <div className="card-item-actions">
+                  <div className="card-quick-actions">
                     <button
-                      className={`lock-icon-btn lock-champ-btn ${p.lockChamp ? 'locked' : ''}`}
+                      className={`rune-btn lock-champ-btn ${p.lockChamp ? 'locked' : ''}`}
                       onClick={() => toggleLockChamp(idx)}
                       disabled={!champ}
-                      title={p.lockChamp ? 'Đã khóa tướng này' : 'Khóa tướng này'}
+                      title={p.lockChamp ? 'Tướng đã khóa cố định' : 'Khóa cố định tướng này'}
                     >
                       {p.lockChamp ? <Lock size={12} /> : <Unlock size={12} />}
                     </button>
 
                     <button
-                      className="reroll-single-btn"
+                      className="rune-btn reroll-btn"
                       onClick={() => handleRerollSingle(idx)}
                       disabled={p.lockChamp || isRolling}
-                      title="Quay đổi tướng khác cho riêng vị trí này"
+                      title="Quay đổi tướng khác cho riêng lane này"
                     >
-                      <RefreshCw size={13} />
+                      <RefreshCw size={12} />
                     </button>
                   </div>
                 </div>
