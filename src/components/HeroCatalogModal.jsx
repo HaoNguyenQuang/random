@@ -47,9 +47,12 @@ export default function HeroCatalogModal({
   };
 
   const filteredChamps = CHAMPIONS.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = selectedRole === 'TẤT CẢ' || (c.roles && c.roles.includes(selectedRole));
-    return matchesSearch && matchesRole;
+    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase().trim());
+    if (!matchesSearch) return false;
+    if (selectedRole === 'TẤT CẢ') return true;
+    const targetRole = selectedRole.toLowerCase().trim();
+    const roleStr = ((c.roles ? c.roles.join('/') : '') + '/' + (c.role || '')).toLowerCase();
+    return roleStr.includes(targetRole);
   });
 
   const activeCount = CHAMPIONS.length - disabledHeroIds.size;

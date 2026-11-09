@@ -27,7 +27,7 @@ const DEFAULT_PLAYERS = [
   { name: 'Vũ', role: 'JUNGLE', champId: null, lockRole: false, lockChamp: false },
   { name: 'Hào', role: 'MID', champId: null, lockRole: false, lockChamp: false },
   { name: 'Công', role: 'AD', champId: null, lockRole: false, lockChamp: false },
-  { name: 'Đức', role: 'SP', champId: null, lockRole: false, lockChamp: false }
+  { name: 'Đức', role: 'SUPPORT', champId: null, lockRole: false, lockChamp: false }
 ];
 
 export default function App() {
@@ -67,6 +67,7 @@ export default function App() {
           const defaultNames = ['Minh', 'Vũ', 'Hào', 'Công', 'Đức'];
           return parsed.map((p, idx) => ({
             ...p,
+            role: p.role === 'SP' ? 'SUPPORT' : (p.role || POSITIONS[idx]),
             name: p.name && !p.name.includes('Người chơi') ? p.name : defaultNames[idx]
           }));
         }

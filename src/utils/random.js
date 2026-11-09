@@ -29,9 +29,17 @@ export function secureShuffle(array) {
   return arr;
 }
 
+export function normalizeRole(role) {
+  if (!role) return 'SUPPORT';
+  const upper = String(role).toUpperCase().trim();
+  if (upper === 'SP' || upper === 'SUPPORT') return 'SUPPORT';
+  if (upper === 'JG' || upper === 'JUNGLE') return 'JUNGLE';
+  return upper;
+}
+
 export function getHeroTierForLane(heroName, lane, laneMeta) {
   if (!lane || !laneMeta) return 'REMOVED';
-  const targetLane = (lane === 'SP') ? 'SUPPORT' : (lane === 'SUPPORT' ? 'SUPPORT' : lane);
+  const targetLane = normalizeRole(lane);
   const m = laneMeta[targetLane] || laneMeta[lane];
   if (!m) return 'REMOVED';
   if (m.removed && m.removed.includes(heroName)) return 'REMOVED';
@@ -105,12 +113,13 @@ export function solveTeamMatching({
 
   players.forEach((p, idx) => {
     if (p.lockRole && p.role) {
-      assignedRoles[idx] = p.role;
-      lockedRolesUsed.add(p.role);
+      const norm = normalizeRole(p.role);
+      assignedRoles[idx] = norm;
+      lockedRolesUsed.add(norm);
     }
   });
 
-  const freeRoleList = POSITIONS.filter(r => !lockedRolesUsed.has(r));
+  const freeRoleList = POSITIONS.map(normalizeRole).filter(r => !lockedRolesUsed.has(r));
   const unassignedPlayerIndices = [];
   players.forEach((p, idx) => {
     if (!assignedRoles[idx]) {
@@ -128,7 +137,8 @@ export function solveTeamMatching({
     function roleBacktrack(step) {
       if (step === shuffledIdxList.length) return true;
       const pIdx = shuffledIdxList[step];
-      const prevRole = (lastPlayerRoles && lastPlayerRoles[pIdx]) || (players[pIdx] && players[pIdx].role);
+      const rawPrev = (lastPlayerRoles && lastPlayerRoles[pIdx]) || (players[pIdx] && players[pIdx].role);
+      const prevRole = rawPrev ? normalizeRole(rawPrev) : null;
 
       let candidateRoles = availableRoles.filter(r => !usedRoles.has(r));
       if (isNoRepeatPrevious && prevRole && candidateRoles.some(r => r !== prevRole)) {

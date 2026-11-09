@@ -52,6 +52,21 @@ export default function ModeTeam5v5({
   const [showPlayerInputs, setShowPlayerInputs] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   const arenaRef = useRef(null);
 
+  // Desktop keyboard shortcuts: Space = Roll, L = Unlock all
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        handleRandomTeam();
+      } else if (e.key === 'l' || e.key === 'L') {
+        handleUnlockAll();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [players, isRolling]);
+
   // Dual-cannon confetti celebration
   const triggerConfetti = () => {
     try {
@@ -133,6 +148,11 @@ export default function ModeTeam5v5({
 
       sound.playVictory();
       triggerConfetti();
+      try {
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          navigator.vibrate([40, 60, 40]);
+        }
+      } catch (e) {}
       setIsRolling(false);
     }, 380);
   };
@@ -459,7 +479,7 @@ export default function ModeTeam5v5({
             return (
               <div 
                 key={idx} 
-                className={`esports-card ${isRolling ? 'card-rolling' : ''}`}
+                className={`esports-card ${isRolling ? 'card-rolling' : ''} tier-aura-${tier}`}
                 style={{ '--card-accent': cfg.color }}
               >
                 {/* 1. FIXED-WIDTH ROLE BADGE */}
