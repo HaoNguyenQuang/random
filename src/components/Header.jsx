@@ -33,7 +33,7 @@ export default function Header({
             </div>
             <div className="brand-text-wrap">
               <h1 className="brand-title">Liên Quân Random</h1>
-              <p className="brand-slogan">Esports 5v5 Arena • Meta S4</p>
+              <p className="brand-slogan">Bình Nguyên Vô Tận • Đấu Trường Danh Vọng</p>
             </div>
           </div>
 

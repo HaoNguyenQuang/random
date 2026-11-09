@@ -37,6 +37,7 @@ export default function ModeTeam5v5({
   setPlayers,
   availableChamps,
   disabledHeroIds,
+  setDisabledHeroIds,
   laneMeta,
   isNoRepeatPrevious,
   setIsNoRepeatPrevious,
@@ -47,10 +48,34 @@ export default function ModeTeam5v5({
   onSaveHistory
 }) {
   const [isRolling, setIsRolling] = useState(false);
+  const [revealingIndex, setRevealingIndex] = useState(-1);
   const [copySuccess, setCopySuccess] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [showPlayerInputs, setShowPlayerInputs] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   const arenaRef = useRef(null);
+
+  const POPULAR_BANS = ['Aya', 'Florentino', 'Elsu', 'Grakk', 'Yuemi', 'Airi'];
+
+  // Toggle quick ban
+  const handleToggleQuickBan = (champId) => {
+    sound.playClick();
+    if (!setDisabledHeroIds) return;
+    setDisabledHeroIds(prev => {
+      const next = new Set(prev);
+      if (next.has(champId)) next.delete(champId);
+      else next.add(champId);
+      return next;
+    });
+  };
+
+  // Spotlight mouse track
+  const handleCardMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty('--mouse-x', `${x}px`);
+    e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
+  };
 
   // Desktop keyboard shortcuts: Space = Roll, L = Unlock all
   useEffect(() => {
@@ -87,74 +112,84 @@ export default function ModeTeam5v5({
     } catch (e) {}
   };
 
-  // Main Team Random Roll (Smooth 0-lag execution with role & champ anti-repeat)
+  // Main Team Random Roll (Dramatic Stagger Esports Reveal)
   const handleRandomTeam = () => {
     if (isRolling) return;
     sound.playWhoosh();
     setIsRolling(true);
+    setRevealingIndex(0);
 
-    setTimeout(() => {
-      const result = solveTeamMatching({
-        players,
-        availableChamps,
-        disabledHeroIds,
-        laneMeta,
-        isNoRepeatPrevious,
-        lastRolledChampIds,
-        lastPlayerRoles
-      });
+    const result = solveTeamMatching({
+      players,
+      availableChamps,
+      disabledHeroIds,
+      laneMeta,
+      isNoRepeatPrevious,
+      lastRolledChampIds,
+      lastPlayerRoles
+    });
 
-      if (!result.success) {
-        sound.playClick();
-        alert('Không tìm đủ tướng hợp lệ cho cả 5 vị trí! Vui lòng kiểm tra lại Danh sách tướng hoặc Meta.');
-        setIsRolling(false);
-        return;
-      }
-
-      const newPlayers = players.map((p, idx) => ({
-        ...p,
-        role: result.assignedRoles[idx] || p.role,
-        champId: result.assignedChamps[idx] || p.champId
-      }));
-
-      setPlayers(newPlayers);
-
-      // Record last rolled champion IDs and player roles for no-repeat mode
-      const newRolledIds = new Set(newPlayers.map(p => p.champId).filter(Boolean));
-      setLastRolledChampIds(newRolledIds);
-
-      const newRoles = {};
-      newPlayers.forEach((p, idx) => {
-        newRoles[idx] = p.role;
-      });
-      if (setLastPlayerRoles) {
-        setLastPlayerRoles(newRoles);
-      }
-
-      // Save to history
-      if (onSaveHistory) {
-        onSaveHistory({
-          type: 'team5v5',
-          timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-          date: new Date().toLocaleDateString('vi-VN'),
-          players: newPlayers.map(p => ({
-            playerName: p.name,
-            role: p.role,
-            champ: CHAMP_LOOKUP[p.champId]?.name || '---',
-            tier: getHeroTierForLane(CHAMP_LOOKUP[p.champId]?.name, p.role, laneMeta)
-          }))
-        });
-      }
-
-      sound.playVictory();
-      triggerConfetti();
-      try {
-        if (typeof navigator !== 'undefined' && navigator.vibrate) {
-          navigator.vibrate([40, 60, 40]);
-        }
-      } catch (e) {}
+    if (!result.success) {
+      sound.playClick();
+      alert('Không tìm đủ tướng hợp lệ cho cả 5 vị trí! Vui lòng kiểm tra lại Danh sách tướng hoặc Meta.');
       setIsRolling(false);
-    }, 380);
+      setRevealingIndex(-1);
+      return;
+    }
+
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      setRevealingIndex(step);
+      sound.playTick();
+      if (step >= 4) {
+        clearInterval(interval);
+        setTimeout(() => {
+          const newPlayers = players.map((p, idx) => ({
+            ...p,
+            role: result.assignedRoles[idx] || p.role,
+            champId: result.assignedChamps[idx] || p.champId
+          }));
+
+          setPlayers(newPlayers);
+
+          const newRolledIds = new Set(newPlayers.map(p => p.champId).filter(Boolean));
+          setLastRolledChampIds(newRolledIds);
+
+          const newRoles = {};
+          newPlayers.forEach((p, idx) => {
+            newRoles[idx] = p.role;
+          });
+          if (setLastPlayerRoles) {
+            setLastPlayerRoles(newRoles);
+          }
+
+          if (onSaveHistory) {
+            onSaveHistory({
+              type: 'team5v5',
+              timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              date: new Date().toLocaleDateString('vi-VN'),
+              players: newPlayers.map(p => ({
+                playerName: p.name,
+                role: p.role,
+                champ: CHAMP_LOOKUP[p.champId]?.name || '---',
+                tier: getHeroTierForLane(CHAMP_LOOKUP[p.champId]?.name, p.role, laneMeta)
+              }))
+            });
+          }
+
+          sound.playVictory();
+          triggerConfetti();
+          try {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+              navigator.vibrate([40, 60, 40]);
+            }
+          } catch (e) {}
+          setIsRolling(false);
+          setRevealingIndex(-1);
+        }, 120);
+      }
+    }, 110);
   };
 
   // Reroll single player's champion
@@ -416,7 +451,7 @@ export default function ModeTeam5v5({
           disabled={isRolling}
         >
           <Swords size={24} className={isRolling ? 'animate-spin' : ''} />
-          <span>{isRolling ? '⚡ ĐANG PHÂN LANE & TƯỚNG...' : '⚔️ RANDOM ĐỘI HÌNH 5V5'}</span>
+          <span>{isRolling ? '⚡ ĐANG PHÂN LANE & TƯỚNG...' : '⚔️ BẮT ĐẦU CẤM / CHỌN 5V5'}</span>
         </button>
 
         <div className="secondary-actions-group">
@@ -454,9 +489,9 @@ export default function ModeTeam5v5({
         <div className="team-arena-header">
           <div className="flex-row items-center gap-2">
             <Flame size={20} color="#f5ba31" />
-            <span className="arena-title">ĐỘI HÌNH THI ĐẤU 5V5</span>
+            <span className="arena-title">BÌNH NGUYÊN VÔ TẬN • ĐỘI HÌNH 5V5</span>
           </div>
-          <span className="arena-badge">CHẾ ĐỘ TỰ CHỌN META S4</span>
+          <span className="arena-badge">ĐẤU TRƯỜNG DANH VỌNG S4</span>
         </div>
 
         <div className="team-arena-grid">

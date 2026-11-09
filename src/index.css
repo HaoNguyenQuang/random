@@ -102,13 +102,14 @@ body {
   position: relative;
 }
 
-/* DYNAMIC CYBER ESPORTS ARENA BACKGROUND */
-.arena-bg-wrapper {
+/* BÌNH NGUYÊN VÔ TẬN - LỤC ĐỊA ATHANOR (ARENA OF VALOR AUTHENTIC THEME) */
+.arena-bg-wrapper.antaris-battlefield-theme {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
+  background: radial-gradient(circle at 50% 12%, #0f1629 0%, #080c18 60%, #04060c 100%);
 }
 
 .arena-bg-canvas {
@@ -119,38 +120,51 @@ body {
   pointer-events: none;
 }
 
-.arena-ambient-spotlight {
+.antaris-aurora {
   position: absolute;
   pointer-events: none;
-  filter: blur(60px);
+  filter: blur(80px);
 }
 
-.arena-spotlight-top {
-  top: -20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 900px;
-  height: 550px;
-  background: radial-gradient(ellipse at center, rgba(245, 186, 49, 0.12) 0%, rgba(255, 42, 109, 0.05) 45%, transparent 70%);
+/* Ánh sáng Vàng Kim Thần Thánh từ Tháp Quang Minh (Tower of Light) */
+.aurora-light {
+  top: -15%;
+  left: -8%;
+  width: 780px;
+  height: 680px;
+  background: radial-gradient(circle at center, rgba(245, 186, 49, 0.18) 0%, rgba(255, 215, 0, 0.08) 40%, transparent 70%);
+  animation: pulseAthanorLight 9s ease-in-out infinite alternate;
 }
 
-.arena-spotlight-bottom {
-  bottom: -15%;
+/* Khí tức Hỗn Mang & Năng lượng Tà Thần Caesar (Abyss & Dark Slayer) */
+.aurora-abyss {
+  bottom: -20%;
   right: -10%;
-  width: 600px;
-  height: 500px;
-  background: radial-gradient(circle at center, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+  width: 820px;
+  height: 720px;
+  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.16) 0%, rgba(255, 71, 87, 0.09) 45%, transparent 70%);
+  animation: pulseAbyssDarkness 11s ease-in-out infinite alternate;
 }
 
-.arena-cyber-grid {
+@keyframes pulseAthanorLight {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.7; }
+  100% { transform: scale(1.1) translate(30px, 20px); opacity: 0.95; }
+}
+
+@keyframes pulseAbyssDarkness {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.65; }
+  100% { transform: scale(1.15) translate(-25px, -20px); opacity: 0.9; }
+}
+
+/* Sương mù Chiến trường Antaris (Fog of War) */
+.antaris-battlefield-fog {
   position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 54px 54px;
-  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, #000 30%, transparent 90%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, #000 30%, transparent 90%);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 260px;
+  background: linear-gradient(to top, rgba(6, 9, 19, 0.88) 0%, rgba(6, 9, 19, 0.35) 50%, transparent 100%);
+  pointer-events: none;
 }
 
 .main-content-container {
