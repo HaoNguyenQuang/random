@@ -48,11 +48,37 @@ export default function ModeTeam5v5({
   onSaveHistory
 }) {
   const [isRolling, setIsRolling] = useState(false);
-  const [revealingIndex, setRevealingIndex] = useState(-1);
+  const [spinningSlots, setSpinningSlots] = useState(new Set());
+  const [impactIndex, setImpactIndex] = useState(null);
+  const [rerollingSlot, setRerollingSlot] = useState(null);
+  const [displayChamps, setDisplayChamps] = useState(() => players.map(p => p.champId));
+  const [displayRoles, setDisplayRoles] = useState(() => players.map((p, idx) => p.role || POSITIONS[idx]));
   const [copySuccess, setCopySuccess] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [showPlayerInputs, setShowPlayerInputs] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   const arenaRef = useRef(null);
+  const shuffleIntervalRef = useRef(null);
+  const timeoutsRef = useRef([]);
+
+  const clearAllTimers = () => {
+    if (shuffleIntervalRef.current) {
+      clearInterval(shuffleIntervalRef.current);
+      shuffleIntervalRef.current = null;
+    }
+    timeoutsRef.current.forEach(t => clearTimeout(t));
+    timeoutsRef.current = [];
+  };
+
+  useEffect(() => {
+    return () => clearAllTimers();
+  }, []);
+
+  useEffect(() => {
+    if (!isRolling && rerollingSlot === null) {
+      setDisplayChamps(players.map(p => p.champId));
+      setDisplayRoles(players.map((p, idx) => p.role || POSITIONS[idx]));
+    }
+  }, [players, isRolling, rerollingSlot]);
 
   const POPULAR_BANS = ['Aya', 'Florentino', 'Elsu', 'Grakk', 'Yuemi', 'Airi'];
 
@@ -90,7 +116,7 @@ export default function ModeTeam5v5({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [players, isRolling]);
+  }, [players, isRolling, rerollingSlot]);
 
   // Dual-cannon confetti celebration
   const triggerConfetti = () => {
@@ -112,12 +138,12 @@ export default function ModeTeam5v5({
     } catch (e) {}
   };
 
-  // Main Team Random Roll (Dramatic Stagger Esports Reveal)
+  // Main Team Random Roll (Dramatic Stagger Esports Slot-Machine Roulette)
   const handleRandomTeam = () => {
-    if (isRolling) return;
+    if (isRolling || rerollingSlot !== null) return;
+    clearAllTimers();
     sound.playWhoosh();
     setIsRolling(true);
-    setRevealingIndex(0);
 
     const result = solveTeamMatching({
       players,
@@ -133,24 +159,79 @@ export default function ModeTeam5v5({
       sound.playClick();
       alert('Không tìm đủ tướng hợp lệ cho cả 5 vị trí! Vui lòng kiểm tra lại Danh sách tướng hoặc Meta.');
       setIsRolling(false);
-      setRevealingIndex(-1);
       return;
     }
 
-    let step = 0;
-    const interval = setInterval(() => {
-      step++;
-      setRevealingIndex(step);
-      sound.playTick();
-      if (step >= 4) {
-        clearInterval(interval);
-        setTimeout(() => {
+    // Determine slots to spin (slots where champ is not locked)
+    const slotsToSpin = [];
+    players.forEach((p, idx) => {
+      if (!p.lockChamp) {
+        slotsToSpin.push(idx);
+      }
+    });
+
+    if (slotsToSpin.length === 0) {
+      setIsRolling(false);
+      return;
+    }
+
+    const activeSet = new Set(slotsToSpin);
+    setSpinningSlots(new Set(activeSet));
+
+    // Preview candidates for spinning
+    const previewPool = availableChamps.filter(c => !disabledHeroIds.has(c.id));
+    const currentDisplay = players.map(p => p.champId);
+    const assignedRoles = players.map((p, idx) => result.assignedRoles[idx] || p.role || POSITIONS[idx]);
+    setDisplayRoles(assignedRoles);
+
+    // Fast roulette shuffle interval (every 45ms for buttery smooth, zero-lag feel)
+    let tickCount = 0;
+    shuffleIntervalRef.current = setInterval(() => {
+      tickCount++;
+      if (tickCount % 2 === 0) {
+        sound.playTick();
+      }
+      slotsToSpin.forEach(idx => {
+        if (activeSet.has(idx) && previewPool.length > 0) {
+          const randChamp = previewPool[Math.floor(Math.random() * previewPool.length)];
+          if (randChamp) currentDisplay[idx] = randChamp.id;
+        }
+      });
+      setDisplayChamps([...currentDisplay]);
+    }, 45);
+
+    // Sequential staggered locks: 320ms per slot for suspense & esports excitement
+    const stepDuration = 320;
+    slotsToSpin.forEach((slotIdx, order) => {
+      const lockDelay = (order + 1) * stepDuration;
+      const tid = setTimeout(() => {
+        activeSet.delete(slotIdx);
+        setSpinningSlots(new Set(activeSet));
+
+        // Lock in actual hero for this slot
+        currentDisplay[slotIdx] = result.assignedChamps[slotIdx];
+        setDisplayChamps([...currentDisplay]);
+
+        // Lock sound & impact shockwave
+        sound.playLock();
+        setImpactIndex(slotIdx);
+        const impactTid = setTimeout(() => {
+          setImpactIndex(prev => (prev === slotIdx ? null : prev));
+        }, 380);
+        timeoutsRef.current.push(impactTid);
+
+        // If this is the last slot to lock
+        if (order === slotsToSpin.length - 1) {
+          if (shuffleIntervalRef.current) {
+            clearInterval(shuffleIntervalRef.current);
+            shuffleIntervalRef.current = null;
+          }
+
           const newPlayers = players.map((p, idx) => ({
             ...p,
             role: result.assignedRoles[idx] || p.role,
             champId: result.assignedChamps[idx] || p.champId
           }));
-
           setPlayers(newPlayers);
 
           const newRolledIds = new Set(newPlayers.map(p => p.champId).filter(Boolean));
@@ -186,18 +267,17 @@ export default function ModeTeam5v5({
             }
           } catch (e) {}
           setIsRolling(false);
-          setRevealingIndex(-1);
-        }, 120);
-      }
-    }, 110);
+        }
+      }, lockDelay);
+      timeoutsRef.current.push(tid);
+    });
   };
 
-  // Reroll single player's champion
+  // Reroll single player's champion with fast slot-machine spin
   const handleRerollSingle = (playerIndex) => {
     const p = players[playerIndex];
-    if (p.lockChamp) return;
+    if (p.lockChamp || isRolling || rerollingSlot !== null) return;
 
-    sound.playWhoosh();
     const role = p.role || POSITIONS[playerIndex % POSITIONS.length];
     const currentlyUsedChamps = new Set(
       players.filter((_, idx) => idx !== playerIndex).map(pl => pl.champId).filter(Boolean)
@@ -224,16 +304,48 @@ export default function ModeTeam5v5({
     }
 
     const picked = pickWeightedChampion(candidates, role, laneMeta);
-    if (picked) {
-      sound.playVictory();
-      const updated = [...players];
-      updated[playerIndex] = { ...p, champId: picked.id };
-      setPlayers(updated);
+    if (!picked) return;
 
-      const newRolled = new Set(lastRolledChampIds);
-      newRolled.add(picked.id);
-      setLastRolledChampIds(newRolled);
-    }
+    sound.playWhoosh();
+    setRerollingSlot(playerIndex);
+
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      sound.playTick();
+      const randChamp = candidates[Math.floor(Math.random() * candidates.length)];
+      if (randChamp) {
+        setDisplayChamps(prev => {
+          const copy = [...prev];
+          copy[playerIndex] = randChamp.id;
+          return copy;
+        });
+      }
+
+      if (step >= 8) {
+        clearInterval(interval);
+        sound.playLock();
+        sound.playVictory();
+
+        const updated = [...players];
+        updated[playerIndex] = { ...p, champId: picked.id };
+        setPlayers(updated);
+        setDisplayChamps(updated.map(pl => pl.champId));
+
+        setImpactIndex(playerIndex);
+        setTimeout(() => {
+          setImpactIndex(prev => (prev === playerIndex ? null : prev));
+          setRerollingSlot(null);
+        }, 400);
+
+        if (lastRolledChampIds && setLastRolledChampIds) {
+          const nextIds = new Set(lastRolledChampIds);
+          if (p.champId) nextIds.delete(p.champId);
+          nextIds.add(picked.id);
+          setLastRolledChampIds(nextIds);
+        }
+      }
+    }, 45);
   };
 
   // Toggle lock role
@@ -449,10 +561,10 @@ export default function ModeTeam5v5({
           id="btnRollTeam"
           className="cyber-glow-btn primary-action-btn"
           onClick={handleRandomTeam}
-          disabled={isRolling}
+          disabled={isRolling || rerollingSlot !== null}
         >
           <Swords size={22} className={isRolling ? 'animate-spin' : ''} />
-          <span>{isRolling ? '⚡ ĐANG PHÂN LANE & TƯỚNG...' : '⚔️ BẮT ĐẦU CẤM / CHỌN 5V5'}</span>
+          <span>{isRolling ? '⚡ ĐANG QUAY ROULETTE ĐỘI HÌNH...' : '⚔️ BẮT ĐẦU CẤM / CHỌN 5V5'}</span>
           <kbd className="kbd-shortcut-hint">Space</kbd>
         </button>
 
@@ -498,10 +610,14 @@ export default function ModeTeam5v5({
 
         <div className="team-arena-grid">
           {players.map((p, idx) => {
-            const role = p.role || POSITIONS[idx];
+            const role = displayRoles[idx] || p.role || POSITIONS[idx];
             const cfg = POSITION_CONFIG[role] || { name: 'TOP', icon: '⚔️', color: '#ff4757', desc: 'Đường Tà Thần' };
-            const champ = CHAMP_LOOKUP[p.champId];
+            const currentChampId = displayChamps[idx] !== undefined ? displayChamps[idx] : p.champId;
+            const champ = CHAMP_LOOKUP[currentChampId];
             const tier = champ ? getHeroTierForLane(champ.name, role, laneMeta) : '---';
+
+            const isSpinning = spinningSlots.has(idx) || rerollingSlot === idx;
+            const isImpact = impactIndex === idx;
 
             const shortRoleMap = {
               TOP: 'TOP',
@@ -516,7 +632,7 @@ export default function ModeTeam5v5({
             return (
               <div 
                 key={idx} 
-                className={`esports-card ${isRolling ? 'card-rolling' : ''} tier-aura-${tier}`}
+                className={`esports-card ${isSpinning ? 'card-spinning' : ''} ${isImpact ? 'card-lock-impact' : ''} tier-aura-${tier} ${isImpact && tier === 'S' ? 'lock-impact-S' : ''} ${isImpact && tier === 'A' ? 'lock-impact-A' : ''}`}
                 style={{ '--card-accent': cfg.color }}
               >
                 {/* 1. FIXED-WIDTH ROLE BADGE */}
@@ -539,9 +655,9 @@ export default function ModeTeam5v5({
                   </button>
                 </div>
 
-                {/* 2. CHAMPION AVATAR (CRISP CIRCLE & HARDWARE ACCELERATED FLIP) */}
+                {/* 2. CHAMPION AVATAR (CRISP CIRCLE & ROULETTE / IMPACT ANIMATION) */}
                 <div className="card-avatar-wrap">
-                  <div className={`card-avatar-inner ${isRolling ? 'avatar-flip' : ''}`}>
+                  <div className={`card-avatar-inner ${isSpinning ? 'avatar-spinning' : ''} ${isImpact ? 'avatar-impact' : ''}`}>
                     {champ ? (
                       <img 
                         src={champ.avatar} 
@@ -591,12 +707,12 @@ export default function ModeTeam5v5({
                     </button>
 
                     <button
-                      className="reroll-single-btn"
+                      className={`reroll-single-btn ${rerollingSlot === idx ? 'btn-spinning' : ''}`}
                       onClick={() => handleRerollSingle(idx)}
-                      disabled={p.lockChamp || isRolling}
+                      disabled={p.lockChamp || isRolling || rerollingSlot !== null}
                       title="Quay đổi tướng khác cho riêng vị trí này"
                     >
-                      <RefreshCw size={13} />
+                      <RefreshCw size={13} className={rerollingSlot === idx ? 'animate-spin' : ''} />
                     </button>
                   </div>
                 </div>
