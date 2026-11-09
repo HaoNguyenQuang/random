@@ -452,7 +452,7 @@ export default function ModeTeam5v5({
 
           <div className="player-header-actions">
             <button 
-              className="secondary-btn btn-sm"
+              className="secondary-btn btn-sm btn-icon-only"
               onClick={handleRandomizeNames}
               title="Đổi nhanh tên hài hước cho 5 người chơi"
             >

@@ -2481,48 +2481,90 @@ body {
 
   /* CONTROLS & PLAYER NAMES (COMPACT & COLLAPSIBLE ON MOBILE) */
   .controls-panel {
-    padding: 6px 8px;
+    padding: 6px 10px;
     border-radius: 10px;
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 4px;
+    background: #090d1c;
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
   .section-title-wrap {
-    flex-wrap: nowrap;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    gap: 6px;
+    gap: 8px;
+    width: 100%;
     margin-bottom: 0px;
+    flex-wrap: nowrap;
   }
   .section-title {
     font-size: 11px;
     min-width: 0;
   }
   .player-title-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     min-width: 0;
     flex: 1;
+    cursor: pointer;
+    user-select: none;
+  }
+  .player-title-toggle svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    color: var(--gold-bright);
   }
   .player-title-text {
     font-size: 10.5px;
     font-weight: 900;
     white-space: nowrap;
+    flex-shrink: 0;
+    color: var(--gold-light);
   }
   .player-names-summary {
     font-size: 10.5px;
+    font-weight: 600;
     color: var(--cyan-neon);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 130px;
+    min-width: 0;
+    flex: 1;
   }
   .player-header-actions {
-    gap: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     flex-shrink: 0;
   }
   .player-header-actions .secondary-btn {
-    padding: 4px 6px;
-    font-size: 10px;
-    height: 26px;
-    border-radius: 5px;
+    width: auto !important;
+    height: 26px !important;
+    padding: 0 8px !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: var(--text-main) !important;
+    box-sizing: border-box !important;
+  }
+  .player-header-actions .secondary-btn.btn-icon-only {
+    width: 26px !important;
+    height: 26px !important;
+    padding: 0 !important;
+  }
+  .player-header-actions .secondary-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0 !important;
   }
   .btn-label-desktop {
     display: none;
@@ -2540,6 +2582,8 @@ body {
   }
   .player-input-card {
     padding: 4px 6px;
+    height: 30px;
+    box-sizing: border-box;
   }
   .player-name-field {
     font-size: 11.5px;
@@ -2672,7 +2716,7 @@ body {
     width: 100%;
     gap: 4px;
   }
-  .secondary-btn {
+  .secondary-actions-group .secondary-btn {
     width: 100%;
     padding: 5px 2px;
     font-size: 10px;
@@ -2683,7 +2727,7 @@ body {
     white-space: nowrap;
     border-radius: 6px;
   }
-  .secondary-btn svg {
+  .secondary-actions-group .secondary-btn svg {
     width: 11px;
     height: 11px;
     flex-shrink: 0;
