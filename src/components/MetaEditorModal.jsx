@@ -17,6 +17,7 @@ export default function MetaEditorModal({
 }) {
   const [activeLane, setActiveLane] = useState('TOP');
   const [searchTerm, setSearchTerm] = useState('');
+  const [mobileTierFilter, setMobileTierFilter] = useState('ALL');
 
   if (!isOpen) return null;
 
@@ -112,8 +113,8 @@ export default function MetaEditorModal({
               disabled={isSyncing}
               title="Đồng bộ cập nhật mới nhất từ TierLQ.com"
             >
-              <RefreshCw size={14} className={isSyncing ? 'animate-spin' : ''} />
-              <span>{isSyncing ? 'Đang tải...' : 'Đồng Bộ TierLQ'}</span>
+              <RefreshCw size={13} className={isSyncing ? 'animate-spin' : ''} />
+              <span>{isSyncing ? 'Đang tải...' : 'Đồng Bộ'}</span>
             </button>
 
             <button
@@ -121,7 +122,8 @@ export default function MetaEditorModal({
               onClick={handleResetDefault}
               title="Khôi phục danh sách mặc định"
             >
-              <RotateCcw size={14} /> Mặc Định
+              <RotateCcw size={13} />
+              <span>Mặc Định</span>
             </button>
           </div>
         </div>
@@ -137,9 +139,31 @@ export default function MetaEditorModal({
           />
         </div>
 
+        {/* MOBILE TIER QUICK TABS */}
+        <div className="meta-mobile-tier-tabs">
+          <button
+            className={`mobile-tier-tab ${mobileTierFilter === 'ALL' ? 'active' : ''}`}
+            onClick={() => { sound.playClick(); setMobileTierFilter('ALL'); }}
+          >
+            Tất cả
+          </button>
+          {TIERS.map(tier => {
+            const count = (currentLaneData[tier] || []).length;
+            return (
+              <button
+                key={tier}
+                className={`mobile-tier-tab tier-tab-${tier} ${mobileTierFilter === tier ? 'active' : ''}`}
+                onClick={() => { sound.playClick(); setMobileTierFilter(tier); }}
+              >
+                Tier {tier} <span className="tier-tab-badge">({count})</span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* TIERS COLUMNS GRID */}
         <div className="meta-tiers-grid">
-          {TIERS.map(tier => {
+          {TIERS.filter(tier => mobileTierFilter === 'ALL' || mobileTierFilter === tier).map(tier => {
             const heroes = (currentLaneData[tier] || []).filter(h => 
               h.toLowerCase().includes(searchTerm)
             );

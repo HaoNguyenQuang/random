@@ -1,12 +1,13 @@
 import React from 'react';
-import { X, History, Trash2, Copy, Check } from 'lucide-react';
+import { X, History, Trash2, Copy, Check, RotateCcw } from 'lucide-react';
 import { sound } from '../utils/audio';
 
 export default function HistoryModal({
   isOpen,
   onClose,
   history,
-  onClearHistory
+  onClearHistory,
+  onRestore
 }) {
   const [copiedIdx, setCopiedIdx] = React.useState(null);
 
@@ -78,14 +79,26 @@ export default function HistoryModal({
                   <div className="history-time-badge">
                     <span>Lần #{history.length - idx} • {rec.timestamp} ({rec.date})</span>
                   </div>
-                  <button
-                    className="history-copy-btn"
-                    onClick={() => handleCopyRecord(rec, idx)}
-                    title="Sao chép đội hình này"
-                  >
-                    {copiedIdx === idx ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
-                    <span>{copiedIdx === idx ? 'Đã sao chép' : 'Sao chép'}</span>
-                  </button>
+                  <div className="history-item-actions">
+                    {onRestore && (
+                      <button
+                        className="history-restore-btn"
+                        onClick={() => { sound.playClick(); onRestore(rec); }}
+                        title="Nạp lại đội hình này vào bàn 5v5"
+                      >
+                        <RotateCcw size={13} />
+                        <span>Nạp lại</span>
+                      </button>
+                    )}
+                    <button
+                      className="history-copy-btn"
+                      onClick={() => handleCopyRecord(rec, idx)}
+                      title="Sao chép đội hình này"
+                    >
+                      {copiedIdx === idx ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+                      <span>{copiedIdx === idx ? 'Đã sao chép' : 'Sao chép'}</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="history-players-row">

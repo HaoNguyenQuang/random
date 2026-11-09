@@ -189,6 +189,27 @@ export default function App() {
     }
   };
 
+  // Restore lineup from history
+  const handleRestoreHistory = (record) => {
+    if (!record || !Array.isArray(record.players)) return;
+    sound.playVictory();
+    const restored = players.map((p, idx) => {
+      const rec = record.players[idx];
+      if (!rec) return p;
+      const champ = CHAMPIONS.find(c => c.name === rec.champ);
+      return {
+        ...p,
+        name: rec.playerName || p.name,
+        role: rec.role || p.role,
+        champId: champ ? champ.id : p.champId
+      };
+    });
+    setPlayers(restored);
+    setIsHistoryOpen(false);
+    setActiveTab('team5v5');
+    showToast('⚡ Đã nạp lại đội hình từ Lịch sử!');
+  };
+
   const activeHeroCount = CHAMPIONS.length - disabledHeroIds.size;
 
   return (
@@ -282,6 +303,7 @@ export default function App() {
         onClose={() => setIsHistoryOpen(false)}
         history={history}
         onClearHistory={handleClearHistory}
+        onRestore={handleRestoreHistory}
       />
     </div>
   );
