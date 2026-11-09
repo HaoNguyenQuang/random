@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
-import ArenaBackground from './components/ArenaBackground';
 import ModeTeam5v5 from './components/ModeTeam5v5';
 import ModeLanePicker from './components/ModeLanePicker';
 import ModeRoleWheel from './components/ModeRoleWheel';
@@ -217,9 +216,6 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      {/* 0. DYNAMIC CYBER ESPORTS BACKGROUND */}
-      <ArenaBackground />
-
       {/* 1. ESPORTS ARENA HEADER */}
       <Header
         activeTab={activeTab}

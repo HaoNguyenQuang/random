@@ -804,18 +804,14 @@ body {
 }
 
 /* =====================================================================
-   TEAM 5V5 ESPORTS ARENA & CARDS (ATHANOR / MOBA STYLE)
+   TEAM 5V5 ESPORTS ARENA & CARDS (CLEAN & ULTRA-FAST 120 FPS)
    ===================================================================== */
 .team-arena-wrapper {
-  background: linear-gradient(180deg, rgba(14, 20, 42, 0.85) 0%, rgba(7, 10, 20, 0.95) 100%);
-  border: 1.5px solid rgba(245, 186, 49, 0.4);
+  background: var(--bg-dark-card);
+  border: 1.5px solid rgba(245, 186, 49, 0.35);
   border-radius: var(--radius-xl);
-  padding: 24px;
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.8),
-    inset 0 1px 0 rgba(255, 215, 0, 0.25);
-  backdrop-filter: blur(16px);
-  position: relative;
+  padding: 22px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
 .team-arena-header {
@@ -824,24 +820,7 @@ body {
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 14px;
-  margin-bottom: 20px;
-}
-
-.arena-header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.arena-title-icon-box {
-  width: 38px;
-  height: 38px;
-  background: radial-gradient(circle, rgba(245, 186, 49, 0.25) 0%, rgba(0,0,0,0.5) 100%);
-  border: 1px solid rgba(245, 186, 49, 0.5);
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 0 14px rgba(245, 186, 49, 0.3);
+  margin-bottom: 18px;
 }
 
 .arena-title {
@@ -849,68 +828,55 @@ body {
   font-size: 18px;
   font-weight: 900;
   letter-spacing: 0.8px;
-  color: #fff;
-  text-shadow: 0 0 12px rgba(245, 186, 49, 0.4);
-}
-
-.arena-sub-title {
-  font-size: 11px;
-  font-weight: 700;
   color: var(--gold-light);
-  letter-spacing: 0.6px;
 }
 
 .arena-badge {
-  font-family: var(--font-display);
   font-size: 11px;
-  font-weight: 900;
-  padding: 5px 12px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgba(245, 186, 49, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%);
-  border: 1px solid var(--gold-bright);
-  color: #ffd700;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--cyan-neon);
+  color: var(--cyan-neon);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  box-shadow: 0 0 12px rgba(245, 186, 49, 0.3);
+  letter-spacing: 0.5px;
 }
 
 .team-arena-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 
-/* ESPORTS CHAMPION CARD — TALL PORTRAIT ASPECT WITH METALLIC BEVELS */
+/* ESPORTS CARD WITH LANE THEME */
 .esports-card {
-  background: linear-gradient(180deg, #10162c 0%, #0a0e1c 50%, #060812 100%);
+  background: #0a0e1c;
   border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-top: 3.5px solid var(--card-accent, #f5ba31);
-  border-radius: 12px;
+  border-top: 4px solid var(--card-accent, #f5ba31);
+  border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-  transition: transform 0.22s ease-out, border-color 0.22s ease-out, box-shadow 0.22s ease-out;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transition: transform 0.18s ease-out, border-color 0.18s ease-out;
   will-change: transform;
-  position: relative;
 }
 
 .esports-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--card-accent, rgba(245, 186, 49, 0.8));
-  box-shadow: 
-    0 14px 32px rgba(0, 0, 0, 0.85),
-    0 0 20px rgba(245, 186, 49, 0.3);
+  transform: translateY(-4px);
+  border-color: var(--card-accent, rgba(245, 186, 49, 0.7));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
 }
 
 .tier-aura-S {
-  border-color: rgba(255, 42, 109, 0.85) !important;
-  box-shadow: 0 0 22px rgba(255, 42, 109, 0.5), inset 0 0 12px rgba(255, 42, 109, 0.2) !important;
+  border-color: rgba(255, 42, 109, 0.75) !important;
+  box-shadow: 0 0 18px rgba(255, 42, 109, 0.4), inset 0 0 10px rgba(255, 42, 109, 0.15) !important;
 }
 
 .tier-aura-A {
-  border-color: rgba(245, 186, 49, 0.8) !important;
-  box-shadow: 0 0 18px rgba(245, 186, 49, 0.4), inset 0 0 10px rgba(245, 186, 49, 0.15) !important;
+  border-color: rgba(245, 186, 49, 0.65) !important;
+  box-shadow: 0 0 14px rgba(245, 186, 49, 0.3), inset 0 0 8px rgba(245, 186, 49, 0.1) !important;
 }
 
 .kbd-shortcut-hint {
@@ -925,264 +891,254 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* 1. CARD LANE HEADER */
-.card-lane-header {
+.card-role-header {
   padding: 10px 12px;
-  background: rgba(4, 7, 14, 0.8);
+  background: #060912;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.lane-crest {
+.role-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.lane-icon {
-  font-size: 16px;
-  filter: drop-shadow(0 0 4px var(--card-accent, #ffd700));
-}
+.role-icon { font-size: 16px; }
 
-.lane-meta {
+.role-info {
   display: flex;
   flex-direction: column;
 }
 
-.lane-title {
+.role-tag {
   font-family: var(--font-display);
   font-size: 12px;
   font-weight: 900;
   color: #fff;
-  letter-spacing: 0.5px;
   line-height: 1.1;
 }
 
-.lane-mobile {
-  display: none;
-}
-
-.lane-sub {
+.role-name {
   font-size: 10px;
   font-weight: 700;
   color: var(--text-muted);
 }
 
-/* 2. HERO PORTRAIT STAGE (CRISP 1:1 NATIVE RESOLUTION, NO BLUR) */
-.hero-portrait-stage {
-  padding: 14px 10px 8px;
+.lock-icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.lock-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.lock-icon-btn.locked {
+  background: var(--gold-gradient-btn);
+  color: #07090f;
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+/* AVATAR WRAP & HARDWARE ACCELERATED 3D FLIP */
+.card-avatar-wrap {
+  padding: 14px 12px 10px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   position: relative;
 }
 
-.hero-portrait-frame {
+.card-avatar-inner {
   width: 90px;
   height: 90px;
-  background: #060912;
-  border-radius: 10px;
+  border-radius: 50%;
+  border: 3px solid var(--gold-primary);
+  box-shadow: 0 0 18px rgba(245, 186, 49, 0.45);
   overflow: hidden;
-  position: relative;
-  border: 2px solid var(--gold-bright);
-  box-shadow: 0 0 16px rgba(245, 186, 49, 0.45);
+  background: #060912;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.35s ease-out;
   will-change: transform;
-  flex-shrink: 0;
 }
 
-.hero-portrait-img {
+.hero-avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 15%;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
-  display: block;
 }
 
-.hero-portrait-vignette {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(10, 14, 28, 0.6) 80%, #0a0e1c 100%);
-  pointer-events: none;
-}
-
-.card-content-wrap {
+.hero-avatar-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  gap: 4px;
+  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 700;
 }
 
-.mobile-inline-badge {
-  display: none;
-}
-
-.desktop-only-footer {
-  display: flex;
-}
-
-.portrait-flip {
+/* HARDWARE ACCELERATED 3D FLIP WITHOUT REACT RERENDERS */
+.avatar-flip {
   animation: fastFlip 0.38s ease-in-out;
 }
 
-.hero-empty-stage {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: var(--text-faint);
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
+@keyframes fastFlip {
+  0% { transform: scale(1) rotateY(0deg); }
+  50% { transform: scale(0.85) rotateY(90deg); }
+  100% { transform: scale(1) rotateY(0deg); }
 }
 
-.empty-sparkle {
-  color: var(--gold-bright);
-  animation: pulseGlow 2s infinite ease-in-out;
-}
-
-/* TIER RIBBONS PINNED ON HERO ART */
-.hero-tier-ribbon {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 7px;
-  border-radius: 4px;
+/* TIER BADGES (S, A, B, C, D) */
+.tier-badge {
+  margin-top: 8px;
   font-family: var(--font-display);
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 900;
-  letter-spacing: 0.5px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
-.hero-tier-ribbon.tier-S {
-  background: linear-gradient(135deg, #ff2a6d 0%, #990033 100%);
-  border: 1px solid #ffd700;
-  color: #fff;
-  box-shadow: 0 0 10px rgba(255, 42, 109, 0.8);
+.tier-badge-S {
+  background: rgba(255, 42, 109, 0.22);
+  border: 1.5px solid var(--tier-S-color);
+  color: #ff2a6d;
+  box-shadow: 0 0 10px rgba(255, 42, 109, 0.6);
 }
 
-.hero-tier-ribbon.tier-A {
-  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
-  border: 1px solid #fff;
-  color: #07090f;
-  box-shadow: 0 0 10px rgba(245, 186, 49, 0.7);
+.tier-badge-A {
+  background: rgba(245, 186, 49, 0.22);
+  border: 1.5px solid var(--tier-A-color);
+  color: #f5ba31;
+  box-shadow: 0 0 10px rgba(245, 186, 49, 0.5);
 }
 
-.hero-tier-ribbon.tier-B {
-  background: linear-gradient(135deg, #00f0ff 0%, #0066aa 100%);
-  border: 1px solid #fff;
-  color: #07090f;
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+.tier-badge-B {
+  background: rgba(0, 240, 255, 0.2);
+  border: 1.5px solid var(--tier-B-color);
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
 }
 
-.hero-tier-ribbon.tier-C {
-  background: rgba(0, 230, 118, 0.3);
-  border: 1px solid #00e676;
+.tier-badge-C {
+  background: rgba(0, 230, 118, 0.2);
+  border: 1.5px solid var(--tier-C-color);
   color: #00e676;
 }
 
-.hero-tier-ribbon.tier-D {
-  background: rgba(148, 163, 184, 0.3);
-  border: 1px solid #94a3b8;
-  color: #cbd5e1;
+.tier-badge-D {
+  background: rgba(148, 163, 184, 0.2);
+  border: 1.5px solid var(--tier-D-color);
+  color: #94a3b8;
 }
 
-/* 3. HERO DETAILS */
-.hero-details {
-  padding: 8px 10px 10px;
+.role-tag-mobile {
+  display: none;
+}
+
+.role-tag-desktop {
+  display: inline;
+}
+
+.champ-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.tier-badge-pill {
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 900;
+  padding: 1px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* CARD CHAMP BODY */
+.card-champ-body {
+  padding: 4px 10px 12px;
   text-align: center;
   flex: 1;
 }
 
-.hero-display-name {
+.champ-name {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 900;
   color: #fff;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  letter-spacing: 0.3px;
   margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.hero-role-sub {
+.champ-role-desc {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* 4. PLAYER FOOTER BAR */
-.card-player-bar {
+/* CARD PLAYER FOOTER */
+.card-player-footer {
   padding: 8px 10px;
-  background: rgba(4, 7, 14, 0.85);
+  background: #060912;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
 }
 
-.player-slot-badge {
+.player-tag {
   display: flex;
   align-items: center;
   gap: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0;
-}
-
-.slot-num {
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 900;
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: var(--gold-gradient);
-  color: #07090f;
-  flex-shrink: 0;
-}
-
-.player-name-text {
+  color: var(--text-muted);
   font-size: 12px;
-  font-weight: 800;
-  color: var(--gold-light);
+  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.card-quick-actions {
+.player-display-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 110px;
+  color: var(--gold-light);
+}
+
+.card-item-actions {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-/* RUNIC BUTTONS (LOCK, REROLL) */
-.rune-btn {
-  background: #11172a;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: var(--text-muted);
+.reroll-single-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--cyan-neon);
   width: 26px;
   height: 26px;
   border-radius: 6px;
@@ -1190,50 +1146,12 @@ body {
   place-items: center;
   cursor: pointer;
   transition: var(--transition-fast);
-  padding: 0;
 }
 
-.rune-btn:hover {
-  background: #1e293b;
-  border-color: rgba(255, 215, 0, 0.5);
-  color: #fff;
-  transform: translateY(-1px);
-}
-
-.rune-btn.locked {
-  background: var(--gold-gradient-btn);
-  color: #07090f;
-  border-color: #ffd700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-}
-
-.rune-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.lock-lane-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  width: auto;
-  height: 22px;
-  padding: 0 6px;
-  border-radius: 4px;
-}
-
-.lock-text-hint {
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.4px;
-}
-
-.reroll-btn:hover {
-  color: var(--cyan-neon);
+.reroll-single-btn:hover {
+  background: rgba(0, 240, 255, 0.2);
   border-color: var(--cyan-neon);
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+  transform: rotate(90deg);
 }
 
 .banned-chip {
@@ -1995,6 +1913,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .catalog-hero-status-icon {
@@ -2649,219 +2569,219 @@ body {
     flex-shrink: 0;
   }
 
-  /* TOURNAMENT MAIN BUTTON (COMPACT ON MOBILE) */
-  .tournament-main-btn {
-    width: 100% !important;
-    padding: 12px 14px !important;
-    font-size: 14px !important;
-    clip-path: none !important;
-    border-radius: 10px !important;
-    letter-spacing: 0.5px !important;
-  }
-  .tournament-main-btn .btn-wing {
-    display: none !important;
-  }
-  .tournament-main-btn .kbd-shortcut-hint {
-    display: none !important;
-  }
-
-  /* TEAM ARENA WRAPPER & MOBILE ESPORTS CARDS (100% BUG-FREE & RESPONSIVE) */
+  /* TEAM ARENA WRAPPER & SLEEK HORIZONTAL ROWS (ALL 5 PLAYERS VISIBLE!) */
   .team-arena-wrapper {
     padding: 10px 8px;
     border-radius: 14px;
+    background: #090e1c !important;
     backdrop-filter: none !important;
-    background: #090e1e !important;
     width: 100%;
     box-sizing: border-box;
   }
   .team-arena-header {
-    margin-bottom: 10px;
-    padding-bottom: 8px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 6px;
-  }
-  .arena-title-icon-box {
-    width: 28px;
-    height: 28px;
-  }
-  .arena-title-icon-box svg {
-    width: 15px;
-    height: 15px;
   }
   .arena-title {
-    font-size: 12px;
-    line-height: 1.2;
-  }
-  .arena-sub-title {
-    font-size: 8.5px;
+    font-size: 13px;
   }
   .arena-badge {
     font-size: 8.5px;
-    padding: 2px 6px;
-    white-space: nowrap;
+    padding: 2px 5px;
   }
   .team-arena-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
   }
   .esports-card {
     display: flex;
-    flex-direction: column;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-left: 4px solid var(--card-accent, #f5ba31);
-    border-radius: 10px;
-    padding: 0;
-    background: #090e1c;
-    width: 100%;
-    box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-  }
-  .card-lane-header {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 8px;
-    background: rgba(0, 0, 0, 0.45);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    width: 100%;
-    box-sizing: border-box;
-  }
-  .lane-crest {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .lane-icon {
-    font-size: 13px;
-  }
-  .lane-title {
-    font-size: 11px;
-    font-weight: 900;
-    color: #fff;
-  }
-  .lane-sub {
-    font-size: 9.5px;
-    color: var(--text-muted);
-  }
-  .lock-lane-btn {
-    height: 20px;
-    padding: 0 5px;
-    font-size: 8.5px;
-  }
-  .lock-lane-btn svg {
-    width: 10px;
-    height: 10px;
-  }
-  .card-content-wrap {
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 4px solid var(--card-accent, #f5ba31);
+    border-radius: 10px;
+    padding: 4px 6px;
+    background: #090d1c;
+    min-height: 48px;
+    gap: 6px;
     width: 100%;
-    padding: 6px 8px;
     box-sizing: border-box;
-    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease;
   }
-  .hero-portrait-stage {
+  .card-role-header {
+    background: transparent;
+    border: none;
     padding: 0;
-    flex: 0 0 52px;
-    width: 52px;
-    height: 52px;
+    flex: 0 0 62px;
+    min-width: 62px;
+    max-width: 62px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
+    gap: 2px;
   }
-  .hero-portrait-frame {
-    width: 52px;
-    height: 52px;
-    border-radius: 8px;
-    border: 1.5px solid var(--gold-bright);
-    margin: 0;
+  .role-indicator {
+    display: flex;
+    align-items: center;
+    gap: 3px;
   }
-  .hero-portrait-img {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+  .role-icon {
+    font-size: 12px;
   }
-  .hero-tier-ribbon {
-    top: 2px;
-    right: 2px;
-    font-size: 7.5px;
-    padding: 1px 3px;
+  .role-tag-desktop {
+    display: none !important;
   }
-  .hero-details {
+  .role-tag-mobile {
+    display: inline !important;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+  }
+  .role-name {
+    display: none;
+  }
+  .card-role-header .lock-icon-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
     padding: 0;
+  }
+  .card-role-header .lock-icon-btn svg {
+    width: 10px;
+    height: 10px;
+  }
+  .card-avatar-wrap {
+    padding: 0;
+    flex: 0 0 38px;
+    min-width: 38px;
+    max-width: 38px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    position: static;
+  }
+  .card-avatar-inner {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold-primary);
+    box-shadow: 0 0 8px rgba(245, 186, 49, 0.4);
+    overflow: hidden;
+  }
+  .hero-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: -webkit-optimize-contrast;
+  }
+  .card-champ-body {
+    padding: 0 4px;
     text-align: left;
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 1px;
   }
-  .hero-display-name {
-    font-size: 14.5px;
-    font-weight: 900;
+  .champ-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+  .champ-name {
+    font-size: 13px;
+    font-weight: 800;
     color: #fff;
-    line-height: 1.15;
-    margin-bottom: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .hero-role-sub {
-    font-size: 10px;
-    color: var(--text-muted);
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .mobile-inline-badge {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 4px;
-    background: rgba(255, 215, 0, 0.12);
-    border: 1px solid rgba(255, 215, 0, 0.25);
+  .tier-badge-pill {
+    font-size: 8px;
+    font-weight: 900;
+    padding: 1px 4px;
     border-radius: 4px;
-    padding: 1px 5px;
-    margin-top: 2px;
-    width: fit-content;
-    max-width: 120px;
+    flex-shrink: 0;
+    line-height: 1.1;
   }
-  .mobile-inline-badge .slot-num {
-    font-size: 8.5px;
-    padding: 0 3px;
-  }
-  .mobile-inline-badge .player-name-text {
-    font-size: 10.5px;
-    font-weight: 800;
-    color: #ffd700;
+  .champ-role-desc {
+    font-size: 9.5px;
+    color: var(--text-muted);
+    line-height: 1.1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .desktop-only-footer {
-    display: none !important;
-  }
-  .card-quick-actions {
+  .card-player-footer {
+    background: transparent;
+    border: none;
+    padding: 0;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     gap: 4px;
-    flex-shrink: 0;
   }
-  .rune-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
+  .player-tag {
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    border-radius: 5px;
+    padding: 2px 5px;
+    gap: 3px;
+    display: flex;
+    align-items: center;
+    max-width: 72px;
   }
-  .rune-btn svg {
-    width: 13px;
-    height: 13px;
+  .player-tag svg {
+    width: 9px;
+    height: 9px;
+    color: #ffd700;
+  }
+  .player-display-name {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #ffd700;
+    max-width: 52px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .card-item-actions .lock-icon-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    padding: 0;
+  }
+  .card-item-actions .lock-icon-btn svg {
+    width: 10px;
+    height: 10px;
+  }
+  .reroll-single-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    padding: 0;
+  }
+  .reroll-single-btn svg {
+    width: 10px;
+    height: 10px;
   }
 
   /* MODALS & OTHER COMPONENTS */

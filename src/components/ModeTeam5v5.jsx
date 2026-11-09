@@ -447,17 +447,13 @@ export default function ModeTeam5v5({
       <div className="main-actions-bar">
         <button
           id="btnRollTeam"
-          className="cyber-glow-btn primary-action-btn tournament-main-btn"
+          className="cyber-glow-btn primary-action-btn"
           onClick={handleRandomTeam}
           disabled={isRolling}
         >
-          <span className="btn-wing left" aria-hidden="true" />
-          <Swords size={22} className={isRolling ? 'animate-spin' : 'btn-swords-icon'} />
-          <span className="btn-text-content">
-            {isRolling ? '⚡ ĐANG PHÂN LANE & BAN/PICK...' : '⚔️ BẮT ĐẦU TRANH HÙNG (CẤM / CHỌN)'}
-          </span>
-          <kbd className="kbd-shortcut-hint">SPACE</kbd>
-          <span className="btn-wing right" aria-hidden="true" />
+          <Swords size={22} className={isRolling ? 'animate-spin' : ''} />
+          <span>{isRolling ? '⚡ ĐANG PHÂN LANE & TƯỚNG...' : '⚔️ BẮT ĐẦU CẤM / CHỌN 5V5'}</span>
+          <kbd className="kbd-shortcut-hint">Space</kbd>
         </button>
 
         <div className="secondary-actions-group">
@@ -485,7 +481,7 @@ export default function ModeTeam5v5({
             title="Chụp ảnh đội hình chất lượng cao PNG chuẩn Esports"
           >
             <Download size={14} />
-            <span>{isCapturing ? 'Đang Tạo Ảnh...' : 'Xuất Ảnh Đội Hình'}</span>
+            <span>{isCapturing ? 'Đang Tạo Ảnh...' : 'Xuất Ảnh PNG'}</span>
           </button>
         </div>
       </div>
@@ -493,24 +489,17 @@ export default function ModeTeam5v5({
       {/* 4. TEAM 5V5 ARENA CARDS */}
       <div className="team-arena-wrapper" ref={arenaRef}>
         <div className="team-arena-header">
-          <div className="arena-header-left">
-            <div className="arena-title-icon-box">
-              <Flame size={20} color="#ffd700" />
-            </div>
-            <div>
-              <div className="arena-title">BÌNH NGUYÊN VÔ TẬN • ĐỘI HÌNH THI ĐẤU 5V5</div>
-              <div className="arena-sub-title">HỆ THỐNG PHÂN LANE CHUẨN TIERLQ META S4 2026</div>
-            </div>
+          <div className="flex-row items-center gap-2">
+            <Flame size={20} color="#f5ba31" />
+            <span className="arena-title">BÌNH NGUYÊN VÔ TẬN • ĐỘI HÌNH 5V5</span>
           </div>
-          <div className="arena-header-right">
-            <span className="arena-badge">🏆 ĐẤU TRƯỜNG DANH VỌNG</span>
-          </div>
+          <span className="arena-badge">ĐẤU TRƯỜNG DANH VỌNG S4</span>
         </div>
 
         <div className="team-arena-grid">
           {players.map((p, idx) => {
             const role = p.role || POSITIONS[idx];
-            const cfg = POSITION_CONFIG[role] || { name: 'Tà Thần', short: 'TOP', icon: '⚔️', color: '#ff4757', desc: 'Đường Tà Thần' };
+            const cfg = POSITION_CONFIG[role] || { name: 'TOP', icon: '⚔️', color: '#ff4757', desc: 'Đường Tà Thần' };
             const champ = CHAMP_LOOKUP[p.champId];
             const tier = champ ? getHeroTierForLane(champ.name, role, laneMeta) : '---';
 
@@ -520,7 +509,7 @@ export default function ModeTeam5v5({
               AD: 'AD',
               SUPPORT: 'SP',
               SP: 'SP',
-              JUNGLE: 'RỪNG'
+              JUNGLE: 'JG'
             };
             const roleShort = shortRoleMap[role] || role;
 
@@ -529,99 +518,86 @@ export default function ModeTeam5v5({
                 key={idx} 
                 className={`esports-card ${isRolling ? 'card-rolling' : ''} tier-aura-${tier}`}
                 style={{ '--card-accent': cfg.color }}
-                onMouseMove={handleCardMouseMove}
               >
-                {/* 1. LANE HEADER WITH ICON & LOCK LANE BUTTON (CLEAR ON BOTH DESKTOP & MOBILE) */}
-                <div className="card-lane-header">
-                  <div className="lane-crest">
-                    <span className="lane-icon">{cfg.icon}</span>
-                    <span className="lane-title">{roleShort}</span>
-                    <span className="lane-sub">• {cfg.name}</span>
+                {/* 1. FIXED-WIDTH ROLE BADGE */}
+                <div className="card-role-header">
+                  <div className="role-indicator">
+                    <span className="role-icon">{cfg.icon}</span>
+                    <div className="role-info">
+                      <span className="role-tag role-tag-desktop">{role}</span>
+                      <span className="role-tag role-tag-mobile">{roleShort}</span>
+                      <span className="role-name">{cfg.name}</span>
+                    </div>
                   </div>
 
                   <button
-                    className={`rune-btn lock-lane-btn ${p.lockRole ? 'locked' : ''}`}
+                    className={`lock-icon-btn lock-role-btn ${p.lockRole ? 'locked' : ''}`}
                     onClick={() => toggleLockRole(idx)}
-                    title={p.lockRole ? 'Vị trí đã khóa, không đổi khi quay' : 'Khóa cố định vị trí này'}
+                    title={p.lockRole ? 'Đã khóa vị trí này' : 'Khóa vị trí này'}
                   >
-                    {p.lockRole ? <Lock size={11} /> : <Unlock size={11} />}
-                    <span className="lock-text-hint">{p.lockRole ? 'ĐÃ KHÓA' : 'KHÓA LANE'}</span>
+                    {p.lockRole ? <Lock size={12} /> : <Unlock size={12} />}
                   </button>
                 </div>
 
-                {/* 2. CARD MAIN BODY */}
-                <div className="card-content-wrap">
-                  {/* HERO PORTRAIT STAGE (CRISP 1:1 NATIVE RESOLUTION, NO BLUR) */}
-                  <div className="hero-portrait-stage">
-                    <div className={`hero-portrait-frame ${isRolling ? 'portrait-flip' : ''}`}>
-                      {champ ? (
-                        <>
-                          <img 
-                            src={champ.avatar} 
-                            alt={champ.name}
-                            className="hero-portrait-img"
-                            loading="eager"
-                          />
-                          
-                          {tier && tier !== 'REMOVED' && (
-                            <div className={`hero-tier-ribbon tier-${tier}`}>
-                              <span className="tier-star">{tier === 'S' ? '👑' : tier === 'A' ? '⭐' : '⚡'}</span>
-                              <span className="tier-label">{tier}</span>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="hero-empty-stage">
-                          <Sparkles size={20} className="empty-sparkle" />
-                          <span>SẴN SÀNG</span>
-                        </div>
-                      )}
-                    </div>
+                {/* 2. CHAMPION AVATAR (CRISP CIRCLE & HARDWARE ACCELERATED FLIP) */}
+                <div className="card-avatar-wrap">
+                  <div className={`card-avatar-inner ${isRolling ? 'avatar-flip' : ''}`}>
+                    {champ ? (
+                      <img 
+                        src={champ.avatar} 
+                        alt={champ.name}
+                        className="hero-avatar-img"
+                        loading="eager"
+                      />
+                    ) : (
+                      <div className="hero-avatar-placeholder">
+                        <Sparkles size={24} />
+                        <span>Sẵn sàng</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 3. CHAMPION NAME & INLINE TIER BADGE */}
+                <div className="card-champ-body">
+                  <div className="champ-name-row">
+                    <span className="champ-name">{champ ? champ.name : '---'}</span>
+                    {champ && tier && tier !== 'REMOVED' && (
+                      <span className={`tier-badge-pill tier-badge-${tier}`}>
+                        TIER {tier}
+                      </span>
+                    )}
+                  </div>
+                  <div className="champ-role-desc">
+                    {champ ? (champ.roles ? champ.roles.join(' • ') : cfg.name) : 'Bấm random'}
+                  </div>
+                </div>
+
+                {/* 4. PLAYER FOOTER & SINGLE ACTIONS */}
+                <div className="card-player-footer">
+                  <div className="player-tag">
+                    <User size={11} />
+                    <span className="player-display-name">{p.name || `P${idx + 1}`}</span>
                   </div>
 
-                  {/* HERO DETAILS */}
-                  <div className="hero-details">
-                    <div className="hero-name-wrap">
-                      <h3 className="hero-display-name">{champ ? champ.name : '---'}</h3>
-                    </div>
-                    <div className="hero-role-sub">
-                      {champ ? (champ.roles ? champ.roles.join(' • ') : cfg.name) : 'Bấm Cấm/Chọn'}
-                    </div>
-
-                    {/* MOBILE INLINE PLAYER BADGE */}
-                    <div className="player-slot-badge mobile-inline-badge">
-                      <span className="slot-num">#{idx + 1}</span>
-                      <span className="player-name-text">{p.name || `P${idx + 1}`}</span>
-                    </div>
-                  </div>
-
-                  {/* QUICK RUNES (LOCK HERO & REROLL) */}
-                  <div className="card-quick-actions">
+                  <div className="card-item-actions">
                     <button
-                      className={`rune-btn lock-champ-btn ${p.lockChamp ? 'locked' : ''}`}
+                      className={`lock-icon-btn lock-champ-btn ${p.lockChamp ? 'locked' : ''}`}
                       onClick={() => toggleLockChamp(idx)}
                       disabled={!champ}
-                      title={p.lockChamp ? 'Tướng đã khóa cố định' : 'Khóa cố định tướng này'}
+                      title={p.lockChamp ? 'Đã khóa tướng này' : 'Khóa tướng này'}
                     >
                       {p.lockChamp ? <Lock size={12} /> : <Unlock size={12} />}
                     </button>
 
                     <button
-                      className="rune-btn reroll-btn"
+                      className="reroll-single-btn"
                       onClick={() => handleRerollSingle(idx)}
                       disabled={p.lockChamp || isRolling}
-                      title="Quay đổi tướng khác cho riêng lane này"
+                      title="Quay đổi tướng khác cho riêng vị trí này"
                     >
-                      <RefreshCw size={12} />
+                      <RefreshCw size={13} />
                     </button>
-                  </div>
-                </div>
-
-                {/* 3. DESKTOP PLAYER FOOTER */}
-                <div className="card-player-bar desktop-only-footer">
-                  <div className="player-slot-badge" title={`Tuyển thủ vị trí ${idx + 1}`}>
-                    <span className="slot-num">#{idx + 1}</span>
-                    <span className="player-name-text">{p.name || `P${idx + 1}`}</span>
                   </div>
                 </div>
               </div>
