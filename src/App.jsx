@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
+import ArenaBackground from './components/ArenaBackground';
 import ModeTeam5v5 from './components/ModeTeam5v5';
 import ModeLanePicker from './components/ModeLanePicker';
 import ModeRoleWheel from './components/ModeRoleWheel';
@@ -160,7 +161,8 @@ export default function App() {
         const info = {
           patch: result.patch || 'S4 2026',
           time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-          date: new Date().toLocaleDateString('vi-VN')
+          date: new Date().toLocaleDateString('vi-VN'),
+          timestamp: Date.now()
         };
         setSyncInfo(info);
         localStorage.setItem(STORAGE_KEYS.SYNC_INFO, JSON.stringify(info));
@@ -215,6 +217,9 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      {/* 0. DYNAMIC CYBER ESPORTS BACKGROUND */}
+      <ArenaBackground />
+
       {/* 1. ESPORTS ARENA HEADER */}
       <Header
         activeTab={activeTab}
@@ -245,6 +250,7 @@ export default function App() {
             setPlayers={setPlayers}
             availableChamps={CHAMPIONS}
             disabledHeroIds={disabledHeroIds}
+            setDisabledHeroIds={setDisabledHeroIds}
             laneMeta={laneMeta}
             isNoRepeatPrevious={isNoRepeatPrevious}
             setIsNoRepeatPrevious={setIsNoRepeatPrevious}
@@ -260,6 +266,7 @@ export default function App() {
           <ModeLanePicker
             availableChamps={CHAMPIONS}
             disabledHeroIds={disabledHeroIds}
+            setDisabledHeroIds={setDisabledHeroIds}
             laneMeta={laneMeta}
           />
         )}

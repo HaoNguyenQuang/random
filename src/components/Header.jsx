@@ -15,6 +15,8 @@ export default function Header({
   setSoundEnabled,
   activeHeroCount
 }) {
+  const isMetaOutdated = !syncInfo || (syncInfo.timestamp && Date.now() - syncInfo.timestamp > 14 * 24 * 60 * 60 * 1000);
+
   const handleSoundToggle = () => {
     const newState = sound.toggle();
     setSoundEnabled(newState);
@@ -104,6 +106,7 @@ export default function Header({
             >
               <RefreshCw size={13} className={isSyncing ? 'animate-spin' : ''} />
               <span>{isSyncing ? 'Đang tải...' : 'Đồng Bộ'}</span>
+              {isMetaOutdated && <span className="sync-badge-outdated" title="Dữ liệu Meta có thể cần cập nhật" />}
             </button>
 
             <button

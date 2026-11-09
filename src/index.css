@@ -99,6 +99,58 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* DYNAMIC CYBER ESPORTS ARENA BACKGROUND */
+.arena-bg-wrapper {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.arena-bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.arena-ambient-spotlight {
+  position: absolute;
+  pointer-events: none;
+  filter: blur(60px);
+}
+
+.arena-spotlight-top {
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 550px;
+  background: radial-gradient(ellipse at center, rgba(245, 186, 49, 0.12) 0%, rgba(255, 42, 109, 0.05) 45%, transparent 70%);
+}
+
+.arena-spotlight-bottom {
+  bottom: -15%;
+  right: -10%;
+  width: 600px;
+  height: 500px;
+  background: radial-gradient(circle at center, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+}
+
+.arena-cyber-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, #000 30%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, #000 30%, transparent 90%);
 }
 
 .main-content-container {
@@ -107,6 +159,13 @@ body {
   padding: 22px 20px 48px;
   flex: 1;
   width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-arena {
+  position: relative;
+  z-index: 1;
 }
 
 /* =====================================================================
@@ -269,6 +328,23 @@ body {
 .icon-btn.sync-live:hover {
   background: rgba(0, 240, 255, 0.15);
   border-color: var(--cyan-neon);
+}
+
+.sync-badge-outdated {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  background: #ff2a6d;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff2a6d;
+  animation: pulseOutdated 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseOutdated {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
 }
 
 .icon-btn.btn-icon-only {
