@@ -459,14 +459,28 @@ body {
 
 .switch-label-text {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 900;
   letter-spacing: 0.5px;
   color: var(--gold-light);
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px;
+  white-space: nowrap;
+}
+
+.heading-desktop {
+  display: inline;
+}
+.heading-mobile {
+  display: none;
+}
+.pill-text-desktop {
+  display: inline;
+}
+.pill-text-mobile {
+  display: none;
 }
 
 .rotate-glow {
@@ -2826,14 +2840,27 @@ body {
     min-width: 0;
     flex: 1;
   }
+  .heading-desktop {
+    display: none;
+  }
+  .heading-mobile {
+    display: inline;
+  }
+  .pill-text-desktop {
+    display: none;
+  }
+  .pill-text-mobile {
+    display: inline;
+  }
   .switch-label-text {
     font-size: 10px;
     font-weight: 800;
-    line-height: 1.25;
+    line-height: 1.2;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
+    white-space: nowrap;
   }
   .switch-label-text svg {
     width: 12px;
@@ -2844,12 +2871,16 @@ body {
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .switch-status-pill {
     font-size: 7.5px;
-    padding: 1px 4px;
+    padding: 1px 5px;
     border-radius: 4px;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .switch-sub-desc {
     display: none; /* Hide verbose subtitle text on mobile to save vertical space */

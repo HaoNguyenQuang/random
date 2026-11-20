@@ -609,10 +609,14 @@ export default function ModeTeam5v5({
           
           <div className="switch-text-group">
             <div className="switch-label-text">
-              <RefreshCw size={18} className={isNoRepeatPrevious ? 'rotate-glow' : ''} />
-              <span className="switch-main-heading">LUẬT FEARLESS DRAFT • ĐỔI LANE & KHÓA TƯỚNG VÁN TRƯỚC</span>
+              <RefreshCw size={17} className={isNoRepeatPrevious ? 'rotate-glow' : ''} />
+              <span className="switch-main-heading">
+                <span className="heading-desktop">LUẬT FEARLESS DRAFT • ĐỔI LANE & KHÓA TƯỚNG VÁN TRƯỚC</span>
+                <span className="heading-mobile">FEARLESS DRAFT (ĐỔI LANE & TƯỚNG)</span>
+              </span>
               <span className={`switch-status-pill ${isNoRepeatPrevious ? 'pill-on' : 'pill-off'}`}>
-                {isNoRepeatPrevious ? '✓ ĐANG BẬT (CHỐNG TRÙNG 100%)' : '✕ ĐANG TẮT'}
+                <span className="pill-text-desktop">{isNoRepeatPrevious ? '✓ ĐANG BẬT' : '✕ ĐANG TẮT'}</span>
+                <span className="pill-text-mobile">{isNoRepeatPrevious ? '✓ BẬT' : '✕ TẮT'}</span>
               </span>
             </div>
 
