@@ -32,6 +32,12 @@ const FUNNY_NAMES = [
   'Elsu Ngắm Tâm', 'Zuka Nhảy Đầm', 'Hayate Lượn Sóng', 'Raz Đấm Thốn'
 ];
 
+const MessengerIcon = ({ size = 15 }) => (
+  <svg viewBox="0 0 28 28" width={size} height={size} fill="currentColor" style={{ flexShrink: 0 }}>
+    <path d="M14 2C7.373 2 2 6.956 2 13.07c0 3.483 1.745 6.586 4.475 8.602V26l4.137-2.27c1.077.298 2.217.46 3.388.46 6.627 0 12-4.956 12-11.07C26 6.956 20.627 2 14 2zm1.26 14.887l-3.076-3.28-6 3.28 6.6-7.008 3.15 3.28 5.926-3.28-6.6 7.008z"/>
+  </svg>
+);
+
 export default function ModeTeam5v5({
   players,
   setPlayers,
@@ -56,6 +62,8 @@ export default function ModeTeam5v5({
   const [copySuccess, setCopySuccess] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [showPlayerInputs, setShowPlayerInputs] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : false);
+  const [showSharePrompt, setShowSharePrompt] = useState(false);
+  const [messengerShared, setMessengerShared] = useState(false);
   const arenaRef = useRef(null);
   const shuffleIntervalRef = useRef(null);
   const rerollIntervalRef = useRef(null);
@@ -147,6 +155,7 @@ export default function ModeTeam5v5({
   const handleRandomTeam = () => {
     if (isRolling || rerollingSlot !== null) return;
     clearAllTimers();
+    setShowSharePrompt(false);
     sound.playWhoosh();
     setIsRolling(true);
 
@@ -194,6 +203,7 @@ export default function ModeTeam5v5({
       sound.playLock();
       sound.playVictory();
       setIsRolling(false);
+      setShowSharePrompt(true);
       return;
     }
 
@@ -289,6 +299,7 @@ export default function ModeTeam5v5({
             }
           } catch (e) {}
           setIsRolling(false);
+          setShowSharePrompt(true);
         }
       }, lockDelay);
       timeoutsRef.current.push(tid);
@@ -377,6 +388,60 @@ export default function ModeTeam5v5({
         timeoutsRef.current.push(tid);
       }
     }, 45);
+  };
+
+  // Share team lineup via Messenger / Web Share
+  const handleShareMessenger = async () => {
+    sound.playClick();
+    const lines = [
+      '🏆 ĐỘI HÌNH LIÊN QUÂN 5V5 (RANDOM ESPORTS):',
+      '───────────────────────────────'
+    ];
+    players.forEach((p, idx) => {
+      const cfg = POSITION_CONFIG[p.role] || { name: p.role || 'Chưa chọn' };
+      const champ = CHAMP_LOOKUP[p.champId];
+      const tier = champ ? getHeroTierForLane(champ.name, p.role, laneMeta) : '---';
+      lines.push(`${idx + 1}. [${cfg.name.toUpperCase()}] ${p.name || 'Người chơi ' + (idx + 1)} ➔ ${champ ? champ.name : '---'} (Tier ${tier})`);
+    });
+    lines.push('───────────────────────────────');
+    lines.push('⚡ Tạo bởi LienQuan Random • Meta S4 2026 TierLQ');
+    if (typeof window !== 'undefined') {
+      lines.push(window.location.href);
+    }
+    const fullText = lines.join('\n');
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+    // 1. Luôn tự động copy vào clipboard trước để người dùng sẵn sàng Paste vào chat
+    try {
+      await navigator.clipboard.writeText(fullText);
+      setMessengerShared(true);
+      setTimeout(() => setMessengerShared(false), 3000);
+    } catch (e) {}
+
+    // 2. Thử Web Share API (cực kỳ tối ưu trên Mobile Chrome / Safari iOS để gửi trực tiếp vào Messenger)
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Đội hình Liên Quân 5v5',
+          text: fullText,
+          url: shareUrl
+        });
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+    }
+
+    // 3. Fallback mở Messenger
+    const isMobileDevice = typeof window !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobileDevice) {
+      window.location.href = `fb-messenger://share?link=${encodeURIComponent(shareUrl)}&app_id=`;
+      setTimeout(() => {
+        window.open('https://m.me', '_blank');
+      }, 1000);
+    } else {
+      window.open('https://www.messenger.com', '_blank');
+    }
   };
 
   // Toggle lock role
@@ -614,6 +679,15 @@ export default function ModeTeam5v5({
           </button>
 
           <button 
+            className="secondary-btn btn-messenger"
+            onClick={handleShareMessenger}
+            title="Chia sẻ đội hình qua Facebook Messenger cho bạn bè"
+          >
+            <MessengerIcon size={14} />
+            <span>{messengerShared ? 'Đã Mở Messenger!' : 'Gửi Messenger'}</span>
+          </button>
+
+          <button 
             className="secondary-btn"
             onClick={handleCopyText}
             title="Sao chép đội hình dạng văn bản để gửi bạn bè"
@@ -633,6 +707,43 @@ export default function ModeTeam5v5({
           </button>
         </div>
       </div>
+
+      {/* 3.1 PROMINENT SHARE BANNER WHEN ROLL COMPLETES */}
+      {showSharePrompt && (
+        <div className="share-lineup-banner animate-slideDown">
+          <div className="share-banner-content">
+            <div className="share-banner-icon">
+              <Sparkles size={20} />
+            </div>
+            <div>
+              <div className="share-banner-heading">ĐÃ CHỌN XONG ĐỘI HÌNH 5V5!</div>
+              <div className="share-banner-sub">
+                {messengerShared
+                  ? '✓ Đã sao chép nội dung đội hình! Dán (Ctrl+V) vào Messenger để gửi.'
+                  : 'Chia sẻ ngay cho anh em trong nhóm Messenger để sẵn sàng vào trận!'}
+              </div>
+            </div>
+          </div>
+
+          <div className="share-banner-buttons">
+            <button 
+              className="messenger-share-btn"
+              onClick={handleShareMessenger}
+              title="Gửi đội hình qua Messenger"
+            >
+              <MessengerIcon size={16} />
+              <span>{messengerShared ? 'Đã Sao Chép & Mở' : 'Gửi Qua Messenger'}</span>
+            </button>
+            <button 
+              className="btn-close-banner"
+              onClick={() => setShowSharePrompt(false)}
+              title="Đóng"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 4. TEAM 5V5 ARENA CARDS */}
       <div className="team-arena-wrapper" ref={arenaRef}>
