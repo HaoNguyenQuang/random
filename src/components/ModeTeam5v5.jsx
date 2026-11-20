@@ -113,6 +113,7 @@ export default function ModeTeam5v5({
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (document.querySelector('.modal-backdrop')) return;
       if (e.code === 'Space') {
         e.preventDefault();
         handleRandomTeam();
@@ -373,6 +374,11 @@ export default function ModeTeam5v5({
         setPlayers(updated);
         setDisplayChamps(updated.map(pl => pl.champId));
 
+        if (setLastRolledChampIds) {
+          const newRolledIds = new Set(updated.map(pl => pl.champId).filter(Boolean));
+          setLastRolledChampIds(newRolledIds);
+        }
+
         setImpactIndex(playerIndex);
         const tid = setTimeout(() => {
           setImpactIndex(prev => (prev === playerIndex ? null : prev));
@@ -630,7 +636,9 @@ export default function ModeTeam5v5({
         {isNoRepeatPrevious && excludedPrevChamps.length > 0 && (
           <div className="excluded-preview-strip animate-fadeIn">
             <span className="strip-title">
-              <Flame size={14} color="#ff3366" /> 5 tướng ván trước bị cấm chọn:
+              <Flame size={13} color="#ff3366" />
+              <span className="strip-title-desktop">5 tướng ván trước bị cấm:</span>
+              <span className="strip-title-mobile">Cấm:</span>
             </span>
             <div className="strip-chips">
               {excludedPrevChamps.map(c => (
