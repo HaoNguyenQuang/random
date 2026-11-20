@@ -17,7 +17,10 @@ import {
   Zap,
   ChevronDown,
   ChevronUp,
-  Edit3
+  Edit3,
+  Share2,
+  Send,
+  X
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
@@ -63,7 +66,7 @@ export default function ModeTeam5v5({
   const [isCapturing, setIsCapturing] = useState(false);
   const [showPlayerInputs, setShowPlayerInputs] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   const [showSharePrompt, setShowSharePrompt] = useState(false);
-  const [messengerShared, setMessengerShared] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const arenaRef = useRef(null);
   const shuffleIntervalRef = useRef(null);
   const rerollIntervalRef = useRef(null);
@@ -390,9 +393,8 @@ export default function ModeTeam5v5({
     }, 45);
   };
 
-  // Share team lineup via Messenger / Web Share
-  const handleShareMessenger = async () => {
-    sound.playClick();
+  // Generate formatted text of the team
+  const generateShareText = () => {
     const lines = [
       '🏆 ĐỘI HÌNH LIÊN QUÂN 5V5 (RANDOM ESPORTS):',
       '───────────────────────────────'
@@ -408,22 +410,30 @@ export default function ModeTeam5v5({
     if (typeof window !== 'undefined') {
       lines.push(window.location.href);
     }
-    const fullText = lines.join('\n');
+    return lines.join('\n');
+  };
+
+  // Universal Share (Web Share API for Mobile, Platform Modal for Desktop)
+  const handleShareTeam = async () => {
+    sound.playClick();
+    const text = generateShareText();
     const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 
-    // 1. Luôn tự động copy vào clipboard trước để người dùng sẵn sàng Paste vào chat
+    // Luôn copy vào clipboard trước để người dùng sẵn sàng Paste
     try {
-      await navigator.clipboard.writeText(fullText);
-      setMessengerShared(true);
-      setTimeout(() => setMessengerShared(false), 3000);
+      await navigator.clipboard.writeText(text);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2500);
     } catch (e) {}
 
-    // 2. Thử Web Share API (cực kỳ tối ưu trên Mobile Chrome / Safari iOS để gửi trực tiếp vào Messenger)
-    if (typeof navigator !== 'undefined' && navigator.share) {
+    const isMobileDevice = typeof window !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // Trên Mobile: Ưu tiên mở Web Share Sheet gốc (hỗ trợ Messenger, Zalo, Telegram, Messages...)
+    if (isMobileDevice && typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
           title: 'Đội hình Liên Quân 5v5',
-          text: fullText,
+          text: text,
           url: shareUrl
         });
         return;
@@ -432,15 +442,42 @@ export default function ModeTeam5v5({
       }
     }
 
-    // 3. Fallback mở Messenger
+    // Mở Modal chia sẻ đa nền tảng
+    setIsShareModalOpen(true);
+  };
+
+  // Share to specific platform
+  const handleShareToPlatform = (platform) => {
+    sound.playClick();
+    const text = generateShareText();
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+    try {
+      navigator.clipboard.writeText(text);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2500);
+    } catch (e) {}
+
     const isMobileDevice = typeof window !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobileDevice) {
-      window.location.href = `fb-messenger://share?link=${encodeURIComponent(shareUrl)}&app_id=`;
-      setTimeout(() => {
-        window.open('https://m.me', '_blank');
-      }, 1000);
-    } else {
-      window.open('https://www.messenger.com', '_blank');
+
+    if (platform === 'messenger') {
+      if (isMobileDevice) {
+        window.location.href = `fb-messenger://share?link=${encodeURIComponent(shareUrl)}`;
+        setTimeout(() => window.open('https://m.me', '_blank'), 1000);
+      } else {
+        window.open('https://www.messenger.com', '_blank');
+      }
+    } else if (platform === 'zalo') {
+      if (isMobileDevice) {
+        window.location.href = `zalo://share?url=${encodeURIComponent(shareUrl)}`;
+        setTimeout(() => window.open('https://chat.zalo.me/', '_blank'), 1000);
+      } else {
+        window.open('https://chat.zalo.me/', '_blank');
+      }
+    } else if (platform === 'telegram') {
+      window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`, '_blank');
+    } else if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
     }
   };
 
@@ -679,12 +716,12 @@ export default function ModeTeam5v5({
           </button>
 
           <button 
-            className="secondary-btn btn-messenger"
-            onClick={handleShareMessenger}
-            title="Chia sẻ đội hình qua Facebook Messenger cho bạn bè"
+            className="secondary-btn btn-share"
+            onClick={handleShareTeam}
+            title="Chia sẻ đội hình qua Messenger, Zalo, Telegram, Facebook..."
           >
-            <MessengerIcon size={14} />
-            <span>{messengerShared ? 'Đã Mở Messenger!' : 'Gửi Messenger'}</span>
+            <Share2 size={14} />
+            <span>Chia Sẻ</span>
           </button>
 
           <button 
@@ -713,31 +750,31 @@ export default function ModeTeam5v5({
         <div className="share-lineup-banner animate-slideDown">
           <div className="share-banner-content">
             <div className="share-banner-icon">
-              <Sparkles size={20} />
+              <Share2 size={20} />
             </div>
             <div>
               <div className="share-banner-heading">ĐÃ CHỌN XONG ĐỘI HÌNH 5V5!</div>
               <div className="share-banner-sub">
-                {messengerShared
-                  ? '✓ Đã sao chép nội dung đội hình! Dán (Ctrl+V) vào Messenger để gửi.'
-                  : 'Chia sẻ ngay cho anh em trong nhóm Messenger để sẵn sàng vào trận!'}
+                {copySuccess
+                  ? '✓ Đã sao chép đội hình! Gửi ngay cho anh em trong nhóm.'
+                  : 'Chia sẻ ngay đội hình cho anh em qua Messenger, Zalo, Telegram, Facebook...'}
               </div>
             </div>
           </div>
 
           <div className="share-banner-buttons">
             <button 
-              className="messenger-share-btn"
-              onClick={handleShareMessenger}
-              title="Gửi đội hình qua Messenger"
+              className="share-main-btn"
+              onClick={handleShareTeam}
+              title="Chia sẻ đội hình qua các nền tảng"
             >
-              <MessengerIcon size={16} />
-              <span>{messengerShared ? 'Đã Sao Chép & Mở' : 'Gửi Qua Messenger'}</span>
+              <Share2 size={16} />
+              <span>Chia Sẻ Đội Hình</span>
             </button>
             <button 
               className="btn-close-banner"
               onClick={() => setShowSharePrompt(false)}
-              title="Đóng"
+              title="Đóng thông báo"
             >
               ✕
             </button>
@@ -868,6 +905,87 @@ export default function ModeTeam5v5({
           })}
         </div>
       </div>
+
+      {/* 5. MULTI-PLATFORM SHARE MODAL */}
+      {isShareModalOpen && (
+        <div className="modal-backdrop" onClick={() => setIsShareModalOpen(false)}>
+          <div className="modal-container share-popup-modal animate-zoomIn" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="flex-row items-center gap-2">
+                <Share2 size={20} className="title-icon" />
+                <div>
+                  <h2 className="modal-title">CHIA SẺ ĐỘI HÌNH 5V5</h2>
+                  <p className="modal-subtitle">Gửi đội hình cho đồng đội qua các nền tảng bên dưới:</p>
+                </div>
+              </div>
+              <button className="modal-close-btn" onClick={() => setIsShareModalOpen(false)}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="share-modal-body">
+              <div className="share-targets-grid">
+                {/* 1. Messenger */}
+                <button className="share-target-btn target-messenger" onClick={() => handleShareToPlatform('messenger')}>
+                  <div className="target-icon-wrap messenger-bg">
+                    <MessengerIcon size={22} />
+                  </div>
+                  <span className="target-name">Messenger</span>
+                  <span className="target-hint">Nhắn tin / Nhóm</span>
+                </button>
+
+                {/* 2. Zalo */}
+                <button className="share-target-btn target-zalo" onClick={() => handleShareToPlatform('zalo')}>
+                  <div className="target-icon-wrap zalo-bg">
+                    <span className="zalo-text">Zalo</span>
+                  </div>
+                  <span className="target-name">Zalo</span>
+                  <span className="target-hint">Chat / Nhóm</span>
+                </button>
+
+                {/* 3. Telegram */}
+                <button className="share-target-btn target-telegram" onClick={() => handleShareToPlatform('telegram')}>
+                  <div className="target-icon-wrap telegram-bg">
+                    <Send size={20} />
+                  </div>
+                  <span className="target-name">Telegram</span>
+                  <span className="target-hint">Gửi tin nhắn</span>
+                </button>
+
+                {/* 4. Facebook */}
+                <button className="share-target-btn target-facebook" onClick={() => handleShareToPlatform('facebook')}>
+                  <div className="target-icon-wrap facebook-bg">
+                    <span className="fb-text">f</span>
+                  </div>
+                  <span className="target-name">Facebook</span>
+                  <span className="target-hint">Đăng bảng tin</span>
+                </button>
+              </div>
+
+              {/* Preview text & Copy button */}
+              <div className="share-preview-card">
+                <div className="share-preview-header">
+                  <span>Nội dung đã được sao chép sẵn:</span>
+                  <button className="copy-btn-action" onClick={handleCopyText}>
+                    {copySuccess ? <Check size={13} color="#10b981" /> : <Copy size={13} />}
+                    <span>{copySuccess ? 'Đã sao chép!' : 'Sao chép lại'}</span>
+                  </button>
+                </div>
+                <pre className="share-preview-pre">{generateShareText()}</pre>
+                <div className="share-hint-tip">
+                  💡 <em>Mẹo: Đội hình đã được tự động lưu vào bộ nhớ tạm (Clipboard), bạn chỉ cần mở ứng dụng và bấm <strong>Ctrl + V</strong> (hoặc Dán) để gửi ngay.</em>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="cyber-glow-btn btn-sm" onClick={() => setIsShareModalOpen(false)}>
+                Xong
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
