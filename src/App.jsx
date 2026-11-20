@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
+import ArenaBackground from './components/ArenaBackground';
 import ModeTeam5v5 from './components/ModeTeam5v5';
 import ModeLanePicker from './components/ModeLanePicker';
 import ModeRoleWheel from './components/ModeRoleWheel';
@@ -19,7 +20,9 @@ const STORAGE_KEYS = {
   DISABLED_HEROES: 'lq_disabled_heroes_v2',
   HISTORY: 'lq_history_v2',
   SYNC_INFO: 'lq_sync_info_v2',
-  SOUND_ENABLED: 'lq_sound_v2'
+  SOUND_ENABLED: 'lq_sound_enabled',
+  LAST_ROLLED_CHAMPS: 'lq_last_rolled_champs_v2',
+  LAST_PLAYER_ROLES: 'lq_last_player_roles_v2'
 };
 
 const DEFAULT_PLAYERS = [
@@ -32,7 +35,13 @@ const DEFAULT_PLAYERS = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('team5v5');
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.SOUND_ENABLED);
+      if (saved !== null) return saved === 'true';
+    } catch (e) {}
+    return sound.enabled;
+  });
 
   // Modals state
   const [isMetaEditorOpen, setIsMetaEditorOpen] = useState(false);
@@ -86,8 +95,20 @@ export default function App() {
   });
 
   // 5 Champions & 5 Roles from the previous round to prevent duplicate lane/hero per player
-  const [lastRolledChampIds, setLastRolledChampIds] = useState(new Set());
-  const [lastPlayerRoles, setLastPlayerRoles] = useState({});
+  const [lastRolledChampIds, setLastRolledChampIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.LAST_ROLLED_CHAMPS);
+      if (saved) return new Set(JSON.parse(saved));
+    } catch (e) {}
+    return new Set();
+  });
+  const [lastPlayerRoles, setLastPlayerRoles] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.LAST_PLAYER_ROLES);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return {};
+  });
 
   // 5-Tier Lane Meta
   const [laneMeta, setLaneMeta] = useState(() => {
@@ -146,6 +167,18 @@ export default function App() {
       localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(history));
     } catch (e) {}
   }, [history]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.LAST_ROLLED_CHAMPS, JSON.stringify(Array.from(lastRolledChampIds)));
+    } catch (e) {}
+  }, [lastRolledChampIds]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.LAST_PLAYER_ROLES, JSON.stringify(lastPlayerRoles));
+    } catch (e) {}
+  }, [lastPlayerRoles]);
 
   // Sync TierLQ function
   const handleSyncTierLQ = async () => {
@@ -207,6 +240,13 @@ export default function App() {
       };
     });
     setPlayers(restored);
+    const restoredChampIds = new Set(restored.map(p => p.champId).filter(Boolean));
+    setLastRolledChampIds(restoredChampIds);
+    const restoredRoles = {};
+    restored.forEach((p, idx) => {
+      restoredRoles[idx] = p.role;
+    });
+    setLastPlayerRoles(restoredRoles);
     setIsHistoryOpen(false);
     setActiveTab('team5v5');
     showToast('⚡ Đã nạp lại đội hình từ Lịch sử!');
@@ -216,6 +256,9 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      {/* 0. DYNAMIC CYBER ESPORTS BACKGROUND */}
+      <ArenaBackground />
+
       {/* 1. ESPORTS ARENA HEADER */}
       <Header
         activeTab={activeTab}

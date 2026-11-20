@@ -58,12 +58,17 @@ export default function ModeTeam5v5({
   const [showPlayerInputs, setShowPlayerInputs] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   const arenaRef = useRef(null);
   const shuffleIntervalRef = useRef(null);
+  const rerollIntervalRef = useRef(null);
   const timeoutsRef = useRef([]);
 
   const clearAllTimers = () => {
     if (shuffleIntervalRef.current) {
       clearInterval(shuffleIntervalRef.current);
       shuffleIntervalRef.current = null;
+    }
+    if (rerollIntervalRef.current) {
+      clearInterval(rerollIntervalRef.current);
+      rerollIntervalRef.current = null;
     }
     timeoutsRef.current.forEach(t => clearTimeout(t));
     timeoutsRef.current = [];
@@ -116,7 +121,7 @@ export default function ModeTeam5v5({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [players, isRolling, rerollingSlot]);
+  }, [players, isRolling, rerollingSlot, disabledHeroIds, laneMeta, isNoRepeatPrevious, lastRolledChampIds, lastPlayerRoles]);
 
   // Dual-cannon confetti celebration
   const triggerConfetti = () => {
@@ -170,7 +175,24 @@ export default function ModeTeam5v5({
       }
     });
 
-    if (slotsToSpin.length === 0) {
+    const hasChampsToSpin = slotsToSpin.length > 0;
+    const hasRolesToShuffle = players.some(p => !p.lockRole);
+
+    if (!hasChampsToSpin && !hasRolesToShuffle) {
+      setIsRolling(false);
+      return;
+    }
+
+    if (!hasChampsToSpin && hasRolesToShuffle) {
+      // Chỉ đảo role khi toàn bộ 5 tướng đã bị khóa
+      const newPlayers = players.map((p, idx) => ({
+        ...p,
+        role: result.assignedRoles[idx] || p.role
+      }));
+      setPlayers(newPlayers);
+      setDisplayRoles(newPlayers.map(p => p.role));
+      sound.playLock();
+      sound.playVictory();
       setIsRolling(false);
       return;
     }
@@ -283,9 +305,21 @@ export default function ModeTeam5v5({
       players.filter((_, idx) => idx !== playerIndex).map(pl => pl.champId).filter(Boolean)
     );
 
+    const prevChampSet = new Set();
+    if (isNoRepeatPrevious) {
+      if (lastRolledChampIds) {
+        lastRolledChampIds.forEach(id => prevChampSet.add(id));
+      }
+      players.forEach((pl, idx) => {
+        if (idx !== playerIndex && pl.champId) {
+          prevChampSet.add(pl.champId);
+        }
+      });
+    }
+
     let candidates = availableChamps.filter(c => {
       if (disabledHeroIds.has(c.id) || currentlyUsedChamps.has(c.id)) return false;
-      if (isNoRepeatPrevious && lastRolledChampIds && lastRolledChampIds.has(c.id)) return false;
+      if (isNoRepeatPrevious && prevChampSet.has(c.id)) return false;
       const t = getHeroTierForLane(c.name, role, laneMeta);
       return t !== 'REMOVED';
     });
@@ -310,7 +344,7 @@ export default function ModeTeam5v5({
     setRerollingSlot(playerIndex);
 
     let step = 0;
-    const interval = setInterval(() => {
+    rerollIntervalRef.current = setInterval(() => {
       step++;
       sound.playTick();
       const randChamp = candidates[Math.floor(Math.random() * candidates.length)];
@@ -323,7 +357,10 @@ export default function ModeTeam5v5({
       }
 
       if (step >= 8) {
-        clearInterval(interval);
+        if (rerollIntervalRef.current) {
+          clearInterval(rerollIntervalRef.current);
+          rerollIntervalRef.current = null;
+        }
         sound.playLock();
         sound.playVictory();
 
@@ -333,17 +370,11 @@ export default function ModeTeam5v5({
         setDisplayChamps(updated.map(pl => pl.champId));
 
         setImpactIndex(playerIndex);
-        setTimeout(() => {
+        const tid = setTimeout(() => {
           setImpactIndex(prev => (prev === playerIndex ? null : prev));
           setRerollingSlot(null);
         }, 400);
-
-        if (lastRolledChampIds && setLastRolledChampIds) {
-          const nextIds = new Set(lastRolledChampIds);
-          if (p.champId) nextIds.delete(p.champId);
-          nextIds.add(picked.id);
-          setLastRolledChampIds(nextIds);
-        }
+        timeoutsRef.current.push(tid);
       }
     }, 45);
   };
@@ -428,10 +459,15 @@ export default function ModeTeam5v5({
     }
   };
 
-  // List of 5 champion objects excluded from previous roll
-  const excludedPrevChamps = lastRolledChampIds 
-    ? Array.from(lastRolledChampIds).map(id => CHAMP_LOOKUP[id]).filter(Boolean)
-    : [];
+  // List of champion objects excluded from previous roll according to Fearless Draft
+  const excludedPrevChamps = React.useMemo(() => {
+    if (!isNoRepeatPrevious) return [];
+    const ids = new Set([
+      ...(lastRolledChampIds || []),
+      ...players.filter(p => !p.lockChamp && p.champId).map(p => p.champId)
+    ]);
+    return Array.from(ids).map(id => CHAMP_LOOKUP[id]).filter(Boolean);
+  }, [isNoRepeatPrevious, lastRolledChampIds, players]);
 
   return (
     <div className="tab-pane active">

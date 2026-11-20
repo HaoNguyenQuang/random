@@ -10,7 +10,7 @@ export default function ArenaBackground() {
   useEffect(() => {
     // Trên mobile hoặc thiết bị cấu hình yếu: dùng hoàn toàn CSS Aurora 0% CPU, tắt canvas để mượt 120 FPS
     if (typeof window === 'undefined') return;
-    const isMobile = window.innerWidth < 768;
+    let isMobile = window.innerWidth < 768;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -21,12 +21,23 @@ export default function ArenaBackground() {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Trên mobile chỉ cần 0 hạt hoặc tối đa 8 hạt không shadow; desktop 22 hạt
+    // Trên mobile chỉ cần 0 hạt hoặc tối đa 8 hạt không shadow; desktop 24 hạt
     const EMBER_COUNT = isMobile ? 0 : 24;
 
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      const nextIsMobile = window.innerWidth < 768;
+      if (nextIsMobile !== isMobile) {
+        isMobile = nextIsMobile;
+        if (isMobile) {
+          cancelAnimationFrame(animId);
+          ctx.clearRect(0, 0, width, height);
+        } else {
+          lastTime = performance.now();
+          animId = requestAnimationFrame(render);
+        }
+      }
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
@@ -151,6 +162,7 @@ export default function ArenaBackground() {
     const interval = 1000 / targetFps;
 
     const render = (currentTime) => {
+      if (isMobile) return;
       animId = requestAnimationFrame(render);
 
       const delta = currentTime - lastTime;
@@ -159,27 +171,28 @@ export default function ArenaBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      if (!isMobile) {
-        runeLight.update();
-        runeLight.draw();
+      runeLight.update();
+      runeLight.draw();
 
-        runeAbyss.update();
-        runeAbyss.draw();
+      runeAbyss.update();
+      runeAbyss.draw();
 
-        for (let i = 0; i < embers.length; i++) {
-          embers[i].update();
-          embers[i].draw();
-        }
+      for (let i = 0; i < embers.length; i++) {
+        embers[i].update();
+        embers[i].draw();
       }
     };
 
-    animId = requestAnimationFrame(render);
+    if (!isMobile) {
+      animId = requestAnimationFrame(render);
+    }
 
     // Tự động tạm dừng khi tab bị ẩn để tiết kiệm pin tối đa
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(animId);
-      } else {
+      if (isMobile) return;
+      cancelAnimationFrame(animId);
+      if (!document.hidden) {
+        lastTime = performance.now();
         animId = requestAnimationFrame(render);
       }
     };

@@ -1,5 +1,5 @@
-import { POSITIONS } from '../data/champions';
-import { TARGET_TIER_PROBS } from '../data/defaultMeta';
+import { POSITIONS } from '../data/champions.js';
+import { TARGET_TIER_PROBS } from '../data/defaultMeta.js';
 
 export function getSecureRandomInt(min, max) {
   const range = max - min + 1;
@@ -141,7 +141,7 @@ export function solveTeamMatching({
       const prevRole = rawPrev ? normalizeRole(rawPrev) : null;
 
       let candidateRoles = availableRoles.filter(r => !usedRoles.has(r));
-      if (isNoRepeatPrevious && prevRole && candidateRoles.some(r => r !== prevRole)) {
+      if (isNoRepeatPrevious && prevRole) {
         candidateRoles = candidateRoles.filter(r => r !== prevRole);
       }
 
@@ -177,6 +177,20 @@ export function solveTeamMatching({
     }
   });
 
+  // Set các tướng bị cấm do luật Fearless Draft (tướng ván trước)
+  const prevChampSet = new Set();
+  if (isNoRepeatPrevious) {
+    if (lastRolledChampIds) {
+      lastRolledChampIds.forEach(id => prevChampSet.add(id));
+    }
+    // Bao gồm cả các tướng đang hiển thị trên bàn (trừ tướng người dùng chủ động bấm khóa)
+    players.forEach(p => {
+      if (p.champId && !p.lockChamp) {
+        prevChampSet.add(p.champId);
+      }
+    });
+  }
+
   const playersToAssign = [];
   for (let i = 0; i < 5; i++) {
     if (!assignedChamps[i]) {
@@ -185,6 +199,7 @@ export function solveTeamMatching({
   }
   const shuffledPlayersToAssign = secureShuffle(playersToAssign);
 
+  // Giai đoạn 1: Backtrack nghiêm ngặt - KHÔNG cho phép lặp tướng ở bất kỳ đường nào
   function backtrack(idx) {
     if (idx === shuffledPlayersToAssign.length) {
       return true;
@@ -195,19 +210,10 @@ export function solveTeamMatching({
     // Lọc tướng hợp lệ cho đường này (loại tướng tắt, tướng đang dùng, tướng lần quay trước nếu bật)
     let candidates = availableChamps.filter(c => {
       if (disabledHeroIds.has(c.id) || usedChampIds.has(c.id)) return false;
-      if (isNoRepeatPrevious && lastRolledChampIds && lastRolledChampIds.has(c.id)) return false;
+      if (isNoRepeatPrevious && prevChampSet.has(c.id)) return false;
       const laneTier = getHeroTierForLane(c.name, role, laneMeta);
       return laneTier !== 'REMOVED';
     });
-
-    // Dự phòng an toàn: nếu do loại tướng lần trước mà đường này không đủ tướng, cho phép dùng lại tướng
-    if (candidates.length === 0 && isNoRepeatPrevious) {
-      candidates = availableChamps.filter(c => {
-        if (disabledHeroIds.has(c.id) || usedChampIds.has(c.id)) return false;
-        const laneTier = getHeroTierForLane(c.name, role, laneMeta);
-        return laneTier !== 'REMOVED';
-      });
-    }
 
     if (candidates.length === 0) return false;
 
@@ -225,6 +231,41 @@ export function solveTeamMatching({
     return false;
   }
 
-  const success = backtrack(0);
+  let success = backtrack(0);
+
+  // Giai đoạn 2: Dự phòng duy nhất nếu người dùng tắt/cấm quá nhiều tướng khiến không đủ tướng mới
+  if (!success && isNoRepeatPrevious) {
+    function fallbackBacktrack(idx) {
+      if (idx === shuffledPlayersToAssign.length) {
+        return true;
+      }
+      const plIdx = shuffledPlayersToAssign[idx];
+      const role = assignedRoles[plIdx];
+
+      let candidates = availableChamps.filter(c => {
+        if (disabledHeroIds.has(c.id) || usedChampIds.has(c.id)) return false;
+        const laneTier = getHeroTierForLane(c.name, role, laneMeta);
+        return laneTier !== 'REMOVED';
+      });
+
+      if (candidates.length === 0) return false;
+
+      const shuffledCandidates = weightedMetaShuffle(candidates, role, laneMeta);
+
+      for (const cand of shuffledCandidates) {
+        usedChampIds.add(cand.id);
+        assignedChamps[plIdx] = cand.id;
+        if (fallbackBacktrack(idx + 1)) {
+          return true;
+        }
+        usedChampIds.delete(cand.id);
+        delete assignedChamps[plIdx];
+      }
+      return false;
+    }
+
+    success = fallbackBacktrack(0);
+  }
+
   return { success, assignedRoles, assignedChamps };
 }
