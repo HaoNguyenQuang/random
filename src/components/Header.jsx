@@ -1,5 +1,5 @@
 import React from 'react';
-import { Swords, Target, Compass, CircleDot, RefreshCw, Settings, Users, History, Volume2, VolumeX } from 'lucide-react';
+import { Swords, Target, Compass, RefreshCw, Settings, Users, History, Volume2, VolumeX } from 'lucide-react';
 import { sound } from '../utils/audio';
 
 export default function Header({
@@ -85,15 +85,6 @@ export default function Header({
               <span className="tab-text-full">Vòng Quay Role</span>
               <span className="tab-text-short">Quay Role</span>
             </button>
-
-            <button
-              className={`nav-tab-btn ${activeTab === 'customWheel' ? 'active' : ''}`}
-              onClick={() => { sound.playClick(); setActiveTab('customWheel'); }}
-            >
-              <CircleDot size={15} /> 
-              <span className="tab-text-full">Vòng Quay Custom</span>
-              <span className="tab-text-short">Custom</span>
-            </button>
           </nav>
 
           {/* HEADER ACTIONS */}
@@ -172,14 +163,6 @@ export default function Header({
         >
           <Compass size={18} />
           <span>Quay Role</span>
-        </button>
-
-        <button
-          className={`bottom-nav-item ${activeTab === 'customWheel' ? 'active' : ''}`}
-          onClick={() => { sound.playClick(); setActiveTab('customWheel'); }}
-        >
-          <CircleDot size={18} />
-          <span>Custom</span>
         </button>
       </nav>
     </>

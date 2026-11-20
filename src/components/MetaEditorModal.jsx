@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, RefreshCw, RotateCcw, Search, ChevronRight, Check } from 'lucide-react';
-import { POSITIONS, POSITION_CONFIG, CHAMP_LOOKUP } from '../data/champions';
+import { X, RefreshCw, RotateCcw, Search, ChevronRight, Check, Plus } from 'lucide-react';
+import { CHAMPIONS, POSITIONS, POSITION_CONFIG, CHAMP_LOOKUP } from '../data/champions';
 import { DEFAULT_LANE_META, TARGET_TIER_PROBS } from '../data/defaultMeta';
 import { sound } from '../utils/audio';
 
@@ -18,6 +18,8 @@ export default function MetaEditorModal({
   const [activeLane, setActiveLane] = useState('TOP');
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileTierFilter, setMobileTierFilter] = useState('ALL');
+  const [selectedAddHero, setSelectedAddHero] = useState('');
+  const [selectedAddTier, setSelectedAddTier] = useState('S');
 
   if (!isOpen) return null;
 
@@ -50,6 +52,15 @@ export default function MetaEditorModal({
 
     setLaneMeta(updated);
   };
+
+  const handleAddHeroToLane = () => {
+    if (!selectedAddHero) return;
+    sound.playVictory();
+    handleMoveTier(selectedAddHero, selectedAddTier);
+    setSelectedAddHero('');
+  };
+
+  const sortedAllChamps = [...CHAMPIONS].sort((a, b) => a.name.localeCompare(b.name, 'vi'));
 
   // Reset to default
   const handleResetDefault = () => {
@@ -128,15 +139,53 @@ export default function MetaEditorModal({
           </div>
         </div>
 
-        {/* SEARCH BAR */}
+        {/* SEARCH BAR & ADD HERO TOOLBAR */}
         <div className="meta-search-bar">
           <Search size={16} />
           <input
             type="text"
-            placeholder={`Tìm tướng đường ${POSITION_CONFIG[activeLane]?.name}...`}
+            placeholder={`Tìm nhanh tướng trong đường ${POSITION_CONFIG[activeLane]?.name}...`}
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value.toLowerCase())}
           />
+        </div>
+
+        {/* ADD ANY HERO TO CURRENT LANE */}
+        <div className="meta-add-hero-bar">
+          <div className="add-hero-label">
+            <Plus size={14} />
+            <span>Thêm tướng vào đường <strong>{POSITION_CONFIG[activeLane]?.name}</strong>:</span>
+          </div>
+          <div className="add-hero-inputs">
+            <select
+              value={selectedAddHero}
+              onChange={e => setSelectedAddHero(e.target.value)}
+              className="add-hero-select"
+            >
+              <option value="">-- Chọn tướng (129 tướng) --</option>
+              {sortedAllChamps.map(c => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+            <select
+              value={selectedAddTier}
+              onChange={e => setSelectedAddTier(e.target.value)}
+              className="add-tier-select"
+            >
+              <option value="S">Vào Tier S (Đỉnh Meta)</option>
+              <option value="A">Vào Tier A (Mạnh)</option>
+              <option value="B">Vào Tier B (Cân bằng)</option>
+              <option value="C">Vào Tier C (Tình huống)</option>
+              <option value="D">Vào Tier D (Yếu / Troll)</option>
+            </select>
+            <button
+              className="add-hero-btn"
+              onClick={handleAddHeroToLane}
+              disabled={!selectedAddHero}
+            >
+              + Thêm
+            </button>
+          </div>
         </div>
 
         {/* MOBILE TIER QUICK TABS */}

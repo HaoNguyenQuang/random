@@ -21,7 +21,6 @@ import {
   Share2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import html2canvas from 'html2canvas';
 import { POSITIONS, POSITION_CONFIG, CHAMP_LOOKUP } from '../data/champions';
 import { getHeroTierForLane, solveTeamMatching, pickWeightedChampion } from '../utils/random';
 import { sound } from '../utils/audio';
@@ -391,6 +390,8 @@ export default function ModeTeam5v5({
     setIsCapturing(true);
 
     try {
+      const html2canvasModule = await import('html2canvas');
+      const html2canvas = html2canvasModule.default || html2canvasModule;
       const canvas = await html2canvas(arenaRef.current, {
         backgroundColor: '#07090f',
         scale: 2,

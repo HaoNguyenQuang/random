@@ -4,7 +4,6 @@ import ArenaBackground from './components/ArenaBackground';
 import ModeTeam5v5 from './components/ModeTeam5v5';
 import ModeLanePicker from './components/ModeLanePicker';
 import ModeRoleWheel from './components/ModeRoleWheel';
-import ModeCustomWheel from './components/ModeCustomWheel';
 import MetaEditorModal from './components/MetaEditorModal';
 import HeroCatalogModal from './components/HeroCatalogModal';
 import HistoryModal from './components/HistoryModal';
@@ -313,10 +312,6 @@ export default function App() {
         {activeTab === 'roleWheel' && (
           <ModeRoleWheel />
         )}
-
-        {activeTab === 'customWheel' && (
-          <ModeCustomWheel />
-        )}
       </main>
 
       {/* 4. FOOTER */}
@@ -327,31 +322,37 @@ export default function App() {
         </div>
       </footer>
 
-      {/* 5. MODALS */}
-      <MetaEditorModal
-        isOpen={isMetaEditorOpen}
-        onClose={() => setIsMetaEditorOpen(false)}
-        laneMeta={laneMeta}
-        setLaneMeta={setLaneMeta}
-        onSyncTierLQ={handleSyncTierLQ}
-        isSyncing={isSyncing}
-        syncInfo={syncInfo}
-      />
+      {/* 5. MODALS (CONDITIONAL RENDER FOR OPTIMAL DOM & MEMORY) */}
+      {isMetaEditorOpen && (
+        <MetaEditorModal
+          isOpen={isMetaEditorOpen}
+          onClose={() => setIsMetaEditorOpen(false)}
+          laneMeta={laneMeta}
+          setLaneMeta={setLaneMeta}
+          onSyncTierLQ={handleSyncTierLQ}
+          isSyncing={isSyncing}
+          syncInfo={syncInfo}
+        />
+      )}
 
-      <HeroCatalogModal
-        isOpen={isHeroCatalogOpen}
-        onClose={() => setIsHeroCatalogOpen(false)}
-        disabledHeroIds={disabledHeroIds}
-        setDisabledHeroIds={setDisabledHeroIds}
-      />
+      {isHeroCatalogOpen && (
+        <HeroCatalogModal
+          isOpen={isHeroCatalogOpen}
+          onClose={() => setIsHeroCatalogOpen(false)}
+          disabledHeroIds={disabledHeroIds}
+          setDisabledHeroIds={setDisabledHeroIds}
+        />
+      )}
 
-      <HistoryModal
-        isOpen={isHistoryOpen}
-        onClose={() => setIsHistoryOpen(false)}
-        history={history}
-        onClearHistory={handleClearHistory}
-        onRestore={handleRestoreHistory}
-      />
+      {isHistoryOpen && (
+        <HistoryModal
+          isOpen={isHistoryOpen}
+          onClose={() => setIsHistoryOpen(false)}
+          history={history}
+          onClearHistory={handleClearHistory}
+          onRestore={handleRestoreHistory}
+        />
+      )}
     </div>
   );
 }
