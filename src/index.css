@@ -809,17 +809,17 @@ body {
   font-size: 12px;
 }
 
-.secondary-btn.btn-share {
-  background: linear-gradient(135deg, rgba(0, 132, 255, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
-  border: 1px solid rgba(0, 132, 255, 0.45);
+.secondary-btn.btn-share-image {
+  background: linear-gradient(135deg, rgba(0, 132, 255, 0.18) 0%, rgba(168, 85, 247, 0.18) 100%);
+  border: 1px solid rgba(0, 132, 255, 0.5);
   color: #60a5fa;
 }
 
-.secondary-btn.btn-share:hover {
-  background: linear-gradient(135deg, rgba(0, 132, 255, 0.3) 0%, rgba(168, 85, 247, 0.3) 100%);
+.secondary-btn.btn-share-image:hover {
+  background: linear-gradient(135deg, rgba(0, 132, 255, 0.35) 0%, rgba(168, 85, 247, 0.35) 100%);
   border-color: #0084ff;
   color: #ffffff;
-  box-shadow: 0 0 14px rgba(0, 132, 255, 0.4);
+  box-shadow: 0 0 14px rgba(0, 132, 255, 0.45);
 }
 
 /* =====================================================================
@@ -921,156 +921,6 @@ body {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* =====================================================================
-   MULTI-PLATFORM SHARE MODAL
-   ===================================================================== */
-.share-popup-modal {
-  max-width: 520px;
-  width: 95%;
-}
-
-.share-modal-body {
-  padding: 16px 20px;
-}
-
-.share-targets-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.share-target-btn {
-  background: #11172c;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
-  padding: 14px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.share-target-btn:hover {
-  transform: translateY(-3px);
-  border-color: rgba(0, 229, 255, 0.5);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-}
-
-.target-icon-wrap {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.messenger-bg {
-  background: linear-gradient(135deg, #0084ff, #a855f7);
-}
-
-.zalo-bg {
-  background: #0068ff;
-}
-
-.zalo-text {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 13px;
-  letter-spacing: -0.5px;
-}
-
-.telegram-bg {
-  background: #229ed9;
-}
-
-.facebook-bg {
-  background: #1877f2;
-}
-
-.fb-text {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 22px;
-  line-height: 1;
-}
-
-.target-name {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.target-hint {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.share-preview-card {
-  background: #080c18;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-}
-
-.share-preview-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.copy-btn-action {
-  background: #1a223a;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: var(--text-main);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: var(--transition-fast);
-}
-
-.copy-btn-action:hover {
-  background: #243052;
-  border-color: #00e5ff;
-  color: #fff;
-}
-
-.share-preview-pre {
-  background: #05070f;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
-  padding: 10px;
-  font-family: monospace;
-  font-size: 11px;
-  line-height: 1.5;
-  color: #94a3b8;
-  white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 140px;
-  overflow-y: auto;
-}
-
-.share-hint-tip {
-  margin-top: 8px;
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
 @media (max-width: 768px) {
   .share-lineup-banner {
     flex-direction: column;
@@ -1084,10 +934,6 @@ body {
   .share-main-btn {
     flex: 1;
     justify-content: center;
-  }
-  .share-targets-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
   }
 }
 
